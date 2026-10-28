@@ -69,6 +69,6 @@ public sealed class DataAdapterTests
         {
             await new BulkQueries(new ShopifyQueries(client)).ProductsListAsync();
         });
-        Assert.That(handler.Requests, Is.EqualTo(2));
+        Assert.That(handler.Requests, Is.EqualTo(4)); // First page plus three bounded read attempts.
     }
 }

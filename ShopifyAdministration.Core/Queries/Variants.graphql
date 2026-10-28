@@ -1,0 +1,9 @@
+query Variants($after: String) {
+  productVariants(first: 100, after: $after) {
+    nodes {
+      id legacyResourceId title sku barcode price compareAtPrice createdAt updatedAt image { id url }
+      product { id legacyResourceId title vendor productType handle templateSuffix status descriptionHtml tags createdAt updatedAt publishedAt featuredImage { id url } }
+    }
+    pageInfo { hasNextPage endCursor }
+  }
+}

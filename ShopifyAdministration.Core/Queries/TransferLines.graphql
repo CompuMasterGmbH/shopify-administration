@@ -1,0 +1,8 @@
+query TransferLines($id: ID!, $after: String) {
+  inventoryTransfer(id: $id) {
+    lineItems(first: 100, after: $after) {
+      nodes { id title totalQuantity shippedQuantity }
+      pageInfo { hasNextPage endCursor }
+    }
+  }
+}

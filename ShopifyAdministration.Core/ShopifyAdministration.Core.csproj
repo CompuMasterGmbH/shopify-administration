@@ -4,4 +4,5 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup><PackageReference Include="Newtonsoft.Json" /></ItemGroup>
+  <ItemGroup><EmbeddedResource Include="Queries\*.graphql" /></ItemGroup>
 </Project>
