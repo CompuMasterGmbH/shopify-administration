@@ -30,7 +30,11 @@ with tempfile.TemporaryDirectory(prefix='unittests_shopify_install_') as tempora
     first = link.resolve(strict=True)
     if not first.is_relative_to(home):
         raise RuntimeError('Installer launcher escaped the test-owned home')
-    next_source = owned / 'next-source'; shutil.copytree(package,next_source)
+    next_source = owned / 'next-source'
+    if sys.platform == 'darwin':
+        subprocess.run(['/usr/bin/ditto',str(package),str(next_source)],check=True)
+    else:
+        shutil.copytree(package,next_source)
     info = json.loads((next_source/'release-info.json').read_text())
     # This tests staging/version-directory switching, not a real signed N-to-N+1 release qualification.
     info['version'] += '.next' if '-' in info['version'] else '-qualification.next'

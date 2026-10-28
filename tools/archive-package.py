@@ -27,7 +27,7 @@ if package.name.endswith('linux-x64'):
     archive = package.with_name(package.name + '.tar.gz')
     with tarfile.open(archive, 'w:gz') as output:
         output.add(package, arcname=package.name)
-elif sys.platform == 'darwin' and json.loads((package / 'release-info.json').read_text()).get('notarized') is True:
+elif sys.platform == 'darwin':
     archive = package.with_name(package.name + '.zip')
     subprocess.run(['/usr/bin/ditto','-c','-k','--sequesterRsrc','--keepParent',str(package),str(archive)],check=True)
 else:
