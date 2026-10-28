@@ -13,6 +13,7 @@ import urllib.request
 import xml.etree.ElementTree as ET
 import zipfile
 import sys
+from release_qualification import validate as validate_qualification
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--publish', type=Path, required=True)
@@ -22,8 +23,13 @@ parser.add_argument('--rid', choices=['win-x64', 'linux-x64', 'osx-arm64'], requ
 parser.add_argument('--version', required=True)
 parser.add_argument('--epplus-source', type=Path)
 parser.add_argument('--source-repository', type=Path)
+parser.add_argument('--channel', choices=['candidate','stable','preview'], default='candidate')
+parser.add_argument('--qualification-record', type=Path)
 args = parser.parse_args()
 root = Path(__file__).resolve().parents[1]
+qualified = args.channel != 'candidate'
+if qualified and (args.qualification_record is None or args.rid not in validate_qualification(args.qualification_record, args.version, args.channel)):
+    raise SystemExit('A matching reviewed production qualification record is required')
 if not re.fullmatch(r'\d+\.\d+\.\d+(?:-[A-Za-z0-9.-]+)?', args.version):
     raise SystemExit('Expected a three-component version with an optional prerelease suffix')
 publish = args.publish.resolve(strict=True)
@@ -77,6 +83,8 @@ for name in ['LICENSE', 'THIRD_PARTY_NOTICES.md']:
 shutil.copy2(root / 'docs/lgpl-replacement.md', package / 'LGPL-REPLACEMENT.md')
 shutil.copy2(root / 'docs/licenses/GPL-3.0.txt', package / 'GPL-3.0.txt')
 shutil.copy2(root / 'docs/licenses/Inter-OFL.txt', package / 'Inter-OFL.txt')
+if args.rid != 'win-x64':
+    shutil.copy2(root / 'tools/install-user.py', package / 'install-user.py')
 
 # Preserve exact upstream licence, copyright and native notices, including licence files embedded in packages.
 assets = json.loads(args.assets.read_text(encoding='utf-8-sig'))
@@ -128,8 +136,8 @@ with (sources / 'application-source.zip').open('wb') as application_source:
     subprocess.run(['git', '-C', str(source_repository), 'archive', '--format=zip', 'HEAD'], stdout=application_source, check=True)
 commit = subprocess.check_output(['git', '-C', str(source_repository), 'rev-parse', 'HEAD'], text=True).strip()
 info = dict(schemaVersion=1, appId='shopify-administration', frontend='avalonia', version=args.version,
-            channel='candidate', rid=args.rid, deploymentType='portable', commit=commit,
-            selfContained=True, signed=False, notarized=False, stableApproved=False)
+            channel=args.channel, rid=args.rid, deploymentType='portable', commit=commit,
+            selfContained=True, signed=qualified and args.rid != 'linux-x64', notarized=qualified and args.rid == 'osx-arm64', stableApproved=qualified)
 (payload / 'app-info.json').write_text(json.dumps(info, indent=2) + '\n', encoding='utf-8')
 (package / 'release-info.json').write_text(json.dumps(info, indent=2) + '\n', encoding='utf-8')
 if args.rid == 'osx-arm64' and sys.platform == 'darwin':

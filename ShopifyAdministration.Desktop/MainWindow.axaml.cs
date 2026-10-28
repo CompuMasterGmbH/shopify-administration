@@ -5,6 +5,8 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using ShopifyAdministration.Core;
+using ShopifyAdministration.Core.Updates;
+using UpdateStatus = ShopifyAdministration.Core.Updates.UpdateStatus;
 
 namespace ShopifyAdministration.Desktop;
 
@@ -21,17 +23,22 @@ public sealed partial class MainWindow : Window
     private bool exporting;
     private CancellationTokenSource exportCancellation;
     private DataTable table;
+    private readonly DesktopUpdates updates;
+    private UpdateResult offeredUpdate;
+    private bool checkingUpdates;
     /// <summary>Creates a safe offline design/smoke window without operational storage.</summary>
     public MainWindow() : this(new LoginSession(new SessionOnlyCredentialStore()), false, true) { }
     /// <summary>Creates a window owning the supplied session and its shutdown cancellation.</summary>
     /// <param name="session">Session disposed when this window closes.</param>
     /// <param name="canPersist">Whether the selected store can encrypt profiles.</param>
     /// <param name="offline">Disables automatic login for isolated UI tests.</param>
-    public MainWindow(LoginSession session, bool canPersist, bool offline = false)
+    /// <param name="updates">Optional separately composed update service; null performs no update I/O.</param>
+    public MainWindow(LoginSession session, bool canPersist, bool offline = false, DesktopUpdates updates = null)
     {
         InitializeComponent();
         Icon = new WindowIcon(Avalonia.Platform.AssetLoader.Open(new Uri("avares://ShopifyAdministration.Desktop/Assets/app.png")));
         this.session = session; this.offline = offline;
+        this.updates = updates;
         login = new LoginPresenter(session, canPersist);
         data = new RetrievalPresenter(session);
         data.PropertyChanged += (_, _) =>
@@ -46,8 +53,52 @@ public sealed partial class MainWindow : Window
         {
             if (!offline && await login.TryAutomaticLoginAsync(shutdown.Token) && !shutdown.IsCancellationRequested) ShowSession();
         };
-        Closed += (_, _) => { shutdown.Cancel(); exportCancellation?.Cancel(); CloseBrowsers(); data.Dispose(); login.Dispose(); session.Dispose(); };
+        Opened += async (_, _) => await CheckForUpdatesAsync(false);
+        Closed += (_, _) => { shutdown.Cancel(); exportCancellation?.Cancel(); CloseBrowsers(); data.Dispose(); login.Dispose(); session.Dispose(); updates?.Dispose(); };
     }
+    private async void OnCheckUpdates(object sender, RoutedEventArgs e) => await CheckForUpdatesAsync(true);
+    private async Task CheckForUpdatesAsync(bool manual)
+    {
+        if (checkingUpdates) return;
+        if (updates == null)
+        {
+            if (manual) { UpdateMessage.Text = "Update-Prüfung im Offline-Test deaktiviert."; UpdateNotice.IsVisible = true; }
+            return;
+        }
+        checkingUpdates = true; CheckUpdates.IsEnabled = false;
+        offeredUpdate = null; OpenUpdate.IsVisible = SkipUpdate.IsVisible = false;
+        try
+        {
+            var result = await updates.Session.CheckAsync(manual, shutdown.Token);
+            if (shutdown.IsCancellationRequested || result == null) return;
+            if (!manual && result.Status != UpdateStatus.Available) return;
+            offeredUpdate = result.Status == UpdateStatus.Available ? result : null;
+            UpdateMessage.Text = result.Message; UpdateNotice.IsVisible = true;
+            OpenUpdate.IsVisible = SkipUpdate.IsVisible = offeredUpdate != null;
+            OpenUpdate.Content = updates.Installation.Deployment == DeploymentKind.ClickOnce ? "ClickOnce öffnen" : "Download öffnen";
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception)
+        {
+            if (manual && !shutdown.IsCancellationRequested) { UpdateMessage.Text = "Update-Prüfung fehlgeschlagen. Bitte später erneut versuchen."; UpdateNotice.IsVisible = true; }
+        }
+        finally { checkingUpdates = false; CheckUpdates.IsEnabled = true; }
+    }
+    private void OnOpenUpdate(object sender, RoutedEventArgs e)
+    {
+        if (offeredUpdate == null || updates == null) return;
+        if (!updates.Open(offeredUpdate)) UpdateMessage.Text = "Der Browser/Installer konnte nicht geöffnet werden. Download: " + offeredUpdate.Destination.AbsoluteUri;
+    }
+    private async void OnSkipUpdate(object sender, RoutedEventArgs e)
+    {
+        if (offeredUpdate == null || updates == null || checkingUpdates) return;
+        checkingUpdates = true; CheckUpdates.IsEnabled = SkipUpdate.IsEnabled = false;
+        try { await updates.Session.SkipAsync(offeredUpdate, shutdown.Token); offeredUpdate = null; UpdateNotice.IsVisible = false; }
+        catch (OperationCanceledException) { }
+        catch (Exception) { UpdateMessage.Text = "Die übersprungene Version konnte nicht gespeichert werden."; }
+        finally { checkingUpdates = false; CheckUpdates.IsEnabled = SkipUpdate.IsEnabled = true; }
+    }
+    private void OnLaterUpdate(object sender, RoutedEventArgs e) { offeredUpdate = null; UpdateNotice.IsVisible = false; }
     private void ShowLogin()
     {
         var view = new LoginView { DataContext = login };

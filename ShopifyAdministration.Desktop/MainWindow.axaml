@@ -4,10 +4,17 @@
       <TextBlock Name="Status" Text="Nicht angemeldet" TextWrapping="Wrap" />
     </Border>
     <StackPanel DockPanel.Dock="Top" Margin="16" Spacing="10">
-      <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
-        <TextBlock Text="Shopify Administration" FontSize="24" FontWeight="SemiBold" />
-        <Button Grid.Column="1" Name="Account" Content="Abmelden / Konto wechseln" Click="Logout" IsVisible="False" />
-        <Button Grid.Column="2" Name="CancelLoad" Content="Abruf abbrechen" Click="CancelLoadClick" IsVisible="False" />
+      <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="8">
+        <TextBlock Text="Shopify Administration" FontSize="24" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+        <Button Grid.Column="1" Name="CheckUpdates" Content="Nach Updates suchen" Click="OnCheckUpdates" />
+        <Button Grid.Column="2" Name="Account" Content="Abmelden / Konto wechseln" Click="Logout" IsVisible="False" />
+        <Button Grid.Column="3" Name="CancelLoad" Content="Abruf abbrechen" Click="CancelLoadClick" IsVisible="False" />
+      </Grid>
+      <Grid Name="UpdateNotice" IsVisible="False" ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="8">
+        <TextBlock Name="UpdateMessage" TextWrapping="Wrap" VerticalAlignment="Center" />
+        <Button Grid.Column="1" Name="OpenUpdate" Content="Download öffnen" Click="OnOpenUpdate" IsVisible="False" />
+        <Button Grid.Column="2" Name="SkipUpdate" Content="Version überspringen" Click="OnSkipUpdate" IsVisible="False" />
+        <Button Grid.Column="3" Name="LaterUpdate" Content="Später" Click="OnLaterUpdate" />
       </Grid>
       <WrapPanel Name="Actions" IsVisible="False">
         <Button Name="Products" Content="Produkte" Tag="Products" Click="LoadData" Margin="0,0,8,8" />

@@ -20,6 +20,8 @@ Other retained application dependencies include Microsoft.Extensions 10.0.14, mo
 
 ## Test-only dependencies
 
+Windows ClickOnce generation uses the pinned official Microsoft.DotNet.Mage 10.0.0 tool. Its managed launcher is included only in ClickOnce packages, with the exact package MIT licence preserved from docs/licenses/DotNetDeploymentTools-LICENSE.txt in the packaged legal archive. It is not a new application API/Shopify SDK dependency. No signing key or certificate password is distributed.
+
 | Package | Version | License |
 |---|---|---|
 | NUnit | 5.0.0 | MIT |

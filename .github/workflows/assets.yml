@@ -66,6 +66,12 @@ jobs:
         timeout-minutes: 2
       - name: Verify inventory and archive candidate
         run: python tools/archive-package.py "artifacts/packages/shopify-administration-$env:VERSION-${{ matrix.rid }}"
+      - name: Per-user installation staging on Linux
+        if: runner.os == 'Linux'
+        run: timeout 90s xvfb-run -a python tools/qualify-user-install.py "artifacts/packages/shopify-administration-$env:VERSION-${{ matrix.rid }}"
+      - name: Per-user installation staging on macOS
+        if: runner.os == 'macOS'
+        run: python tools/qualify-user-install.py "artifacts/packages/shopify-administration-$env:VERSION-${{ matrix.rid }}"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: candidate-assets-${{ matrix.rid }}

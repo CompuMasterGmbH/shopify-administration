@@ -96,6 +96,9 @@ The shared Core/storage runner can also execute on other supported .NET 10 hosts
 - Maintain versions in Directory.Packages.props and commit reviewed packages.lock.json changes. CI uses locked restores and fails on NuGet vulnerability/downgrade warnings.
 - ClickOnce is a Windows option where supported by the chosen frontend. Do not assume Linux/macOS or WinUI 3 support; evaluate appropriate alternatives under #4.
 - Keep update checks asynchronous, bounded, platform/deployment/channel aware, and independent of Shopify credentials. Preserve encrypted profiles across app updates.
+- Keep development/candidate builds unqualified for stable updates. Test update metadata through a separate fake HTTP transport; never attach Shopify headers or reuse its authenticated client. Respect package-manager ownership and exact approved OS/RID/channel/deployment selection.
+- Keep user credentials/preferences outside version-specific ClickOnce/bundle/install directories. Installer tests must use an explicit unique test-owned home and retain previous versions/profile sentinels; never run them against the operator's actual installation/home as automated setup.
+- Native Linux startup under Xvfb uses the software renderer for reproducible CI; do not describe that as GPU, per-monitor DPI or screen-reader qualification. Record real signed/clean-machine upgrade qualification separately in #14.
 - Source commits, pushes, and issue creation do not by themselves authorize a production release. Publish only within the user's release authorization and after the relevant build/test/asset checks.
 - After an authorized publication, verify the complete publishing workflow, expected packages/assets, manifests, download links, and version mapping before reporting success.
 - Before deleting old releases or assets, establish explicit user authorization and the exact target. Do not copy scoped release exceptions from other repositories.
