@@ -1,0 +1,4 @@
+﻿[*.{cs,vb}]
+
+# IDE0003: Qualifizierung entfernen
+dotnet_style_qualification_for_property = true
