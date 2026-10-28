@@ -49,6 +49,8 @@ See [AGENTS.md](AGENTS.md) for architecture, security, testing, issue tracking, 
 
 ## License and publication
 
+Candidate platform archives, icon generation, runtime requirements, corresponding source and signing gates are described in [Release assets](docs/release-assets.md). CI packages are test candidates; they are not automatically published as production releases.
+
 The application's own source is licensed under [MIT](LICENSE). Dependency licenses apply separately; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md), particularly the LGPL obligations for EPPlus 4.5.3.3.
 
 The public repository starts with a sanitized initial commit without the former private Git history. It contains no operational credentials, local credential store, or build output. Configure your own Shopify connection locally in the login dialog.

@@ -4,7 +4,12 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Version>2026.10.28</Version>
-    <ApplicationIcon>../Shopify-Administration/favicon_CMButterfly.ico</ApplicationIcon>
+    <ApplicationIcon>Assets/app.ico</ApplicationIcon>
+    <RuntimeIdentifiers>win-x64;linux-x64;osx-arm64</RuntimeIdentifiers>
+    <RuntimeFrameworkVersion>10.0.14</RuntimeFrameworkVersion>
+    <PublishTrimmed>false</PublishTrimmed>
+    <PublishSingleFile>false</PublishSingleFile>
+    <PublishAot>false</PublishAot>
     <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
   </PropertyGroup>
   <ItemGroup>
@@ -15,6 +20,6 @@
     <PackageReference Include="EPPlus" />
     <ProjectReference Include="../ShopifyAdministration.Data/ShopifyAdministration.Data.vbproj" />
     <ProjectReference Include="../ShopifyAdministration.Platform/ShopifyAdministration.Platform.csproj" />
-    <AvaloniaResource Include="../Shopify-Administration/favicon_CMButterfly.ico" Link="Assets/app.ico" />
+    <AvaloniaResource Include="Assets/**" />
   </ItemGroup>
 </Project>

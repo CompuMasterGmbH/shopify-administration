@@ -1,4 +1,7 @@
 <Project>
+  <PropertyGroup Condition="'$(MSBuildProjectName)' != 'Shopify-Administration' and '$(MSBuildProjectName)' != 'ShopifyAdministration.UiTests'">
+    <RuntimeIdentifiers>win-x64;linux-x64;osx-arm64</RuntimeIdentifiers>
+  </PropertyGroup>
   <PropertyGroup>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <NuGetAudit>true</NuGetAudit>

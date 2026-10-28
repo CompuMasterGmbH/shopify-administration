@@ -406,3 +406,7 @@ credentials*.bin
 *.secrets.json
 appsettings.Local.json
 local.settings.json
+
+node_modules/
+artifacts/
+__pycache__/

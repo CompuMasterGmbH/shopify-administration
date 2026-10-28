@@ -1,0 +1,9 @@
+{
+  "name": "shopify-administration-assets",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Deterministic build-time SVG icon conversion; never shipped as an application dependency.",
+  "license": "MIT",
+  "dependencies": { "@resvg/resvg-js": "2.6.2" },
+  "scripts": { "generate": "node generate.mjs", "verify": "node generate.mjs --verify" }
+}
