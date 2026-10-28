@@ -1,41 +1,47 @@
 # Shopify-Administration
 
-Windows-Desktop-App zur Shopify-Administration. Entwicklungsbasis ist dieses Repository; aktuelle Oberfläche: WinForms auf .NET 10.
+A Shopify administration desktop application. The current frontend is WinForms on .NET 10.
 
-## Anmeldung
+## Login and local storage
 
-- Vollständige HTTPS-API-Basis-URL eingeben, beispielsweise `https://shop.myshopify.com/admin/api/2023-01/`. Shop und API-Version sind konfigurierbar; eine konkrete Betriebsinstanz ist nicht im Programm hinterlegt.
-- Für die bestehende Basic-Authentifizierung API-Schlüssel und Passwort/App-Token eingeben. Bei tokenbasierter Authentifizierung ohne Basic den API-Schlüssel leer lassen.
-- Die Anmeldung wird durch einen lesenden Abruf der Shop-Informationen geprüft. Ungültige Zugangsdaten, Netzwerkfehler und abgelehnte Berechtigungen öffnen keine Sitzung.
-- **Speichern ist standardmäßig aus**, auch bei vorausgefülltem Dialog. Ohne Häkchen bleiben die Werte nur für diese Programmsitzung im Arbeitsspeicher. Nach erfolgreicher Anmeldung ohne Häkchen wird ein früher gespeichertes Profil entfernt. Abbrechen ändert den Speicher nicht.
-- Unter Windows speichert ein Häkchen die gesamte Verbindung (URL, API-Schlüssel, Passwort) mit DPAPI/CurrentUser verschlüsselt unter `%LOCALAPPDATA%\CompuMaster\ShopifyAdministration\credentials.v1.bin`. Die Datei gehört nicht in Repository, Cloud-Sync oder Releases. Sie ist an das Windows-Benutzerprofil gebunden; sie schützt nicht vor Schadsoftware, die bereits unter demselben Benutzer läuft.
-- Ein vorhandenes gespeichertes Profil wird beim nächsten Start geladen und beim Server geprüft. Bei Fehlern erscheint das Anmeldeformular. Ein beschädigter Store wird nicht stillschweigend überschrieben.
-- **Datei → Abmelden / Konto wechseln** beendet die Sitzung, bricht laufende Abrufe ab, schließt API-Fenster und leert angezeigte Daten. Die letzte Verbindung ist im Anmeldeformular vorausgefüllt. Dort sind andere URLs/Konten oder eine erneute Anmeldung möglich. Die Werte bleiben beim Abmelden zunächst im RAM; ein gespeichertes Profil bleibt bis zur erfolgreichen Anmeldung ohne Häkchen erhalten.
-- Das Passwort ist zunächst maskiert und per **Anzeigen / Verbergen** umschaltbar.
-- Anfragen einschließlich Pagination dürfen die konfigurierte HTTPS-Shop-API nicht verlassen. HTTP-Redirects werden nicht automatisch verfolgt.
+- Enter the complete HTTPS API base URL, for example `https://shop.myshopify.com/admin/api/2023-01/`. Both shop and API version are configurable; no operational shop is embedded in the application.
+- For existing Basic authentication, enter the API key and password/app token. For token-only authentication, leave the API-key field empty.
+- Login is validated through a read-only shop-information request. Invalid credentials, network errors, or denied permissions do not activate a session.
+- **Remembering credentials defaults to off**, including prefilled dialogs. Without the checkbox, values stay in memory for the current application session. A successful login without the checkbox removes any previously remembered profile; cancelling leaves storage unchanged.
+- On Windows, opting in encrypts the entire profile (URL, API key, password) using DPAPI/CurrentUser in `%LOCALAPPDATA%\\CompuMaster\\ShopifyAdministration\\credentials.v1.bin`. Do not include this file in source control, cloud synchronization, or releases. It is bound to the Windows user profile; it does not protect against malware already running as that user.
+- A remembered profile is loaded and validated at startup. On failure the login dialog opens. A damaged store is not silently overwritten.
+- **File → Log out / Switch account** ends the session, cancels pending retrieval, closes API windows, and clears displayed data. The login dialog is prefilled with the last connection and allows another account/URL or relogin. A remembered profile remains until a successful login without the checkbox.
+- Passwords are initially masked and can be toggled with the visibility button. The current UI labels are localized in German.
+- Authenticated requests, including pagination, cannot leave the configured HTTPS shop API. HTTP redirects are not followed automatically.
 
-## Aufbau und Plattformen
+## Architecture and platforms
 
-- `ShopifyAdministration.Core`: UI-/plattformunabhängige Verbindung, Anmeldung, Sitzungslebenszyklus, HTTP-Transport und Speichervertrag.
-- `ShopifyAdministration.Platform`: Windows-DPAPI-Adapter mit expliziter Betriebssystemprüfung und Factory.
-- `SessionOnlyCredentialStore`: Fallback für Plattformen ohne sicheren Adapter; Speichern ist nicht möglich, Anmeldung ohne Speicherung bleibt möglich.
-- `Shopify-Administration`: derzeit Windows-spezifische WinForms-Oberfläche und Datenadapter. Die bestehende Oberfläche selbst läuft nicht auf Linux/macOS.
-- [UI-001: Avalonia-/WinUI-Migration](docs/tickets/UI-001-framework-migration.md) enthält Rahmen, Plattformadapter und Abnahmekriterien.
+- `ShopifyAdministration.Core`: UI/platform-independent connection handling, authentication, session lifecycle, HTTP transport, and credential-store contract.
+- `ShopifyAdministration.Platform`: Windows DPAPI adapter, explicit OS guards, and provider factory.
+- `SessionOnlyCredentialStore`: safe fallback when no secure adapter is available. Persistent storage is unavailable; session-only login remains possible.
+- `Shopify-Administration`: the current Windows-only WinForms frontend and data adapters. The frontend itself does not run on Linux/macOS.
+- [UI migration plan](docs/tickets/UI-001-framework-migration.md): Avalonia/WinUI decision, platform adapters, and acceptance criteria.
 
-## Build und Tests
+## Build and tests
 
-.NET 10 SDK und Windows für die Oberfläche vorausgesetzt:
+Use the .NET 10 SDK and Windows for the complete application/UI suite:
 
-```powershell
+~~~powershell
 dotnet build Shopify-Administration.sln -c Release
 dotnet run --project ShopifyAdministration.Tests -c Release
 dotnet run --project ShopifyAdministration.UiTests -c Release
-```
+~~~
 
-Die Core-/Speichertests nutzen Testzugangsdaten und einen Fake-HTTP-Handler; Windows prüft zusätzlich echte DPAPI-Verschlüsselung in einem temporären Verzeichnis. Die UI-Tests prüfen automatischen Login, Abmeldung, Vorausfüllen, Konto-Wechsel, Datenbereinigung, Passwortanzeige und standardmäßig ausgeschaltete Speicherung mit Fake-Server und Fake-Store. Sie senden keine Betriebscredentials an Shopify.
+The Core/storage tests use fake credentials and a fake HTTP handler. On Windows they also verify real DPAPI encryption in a temporary directory. The UI tests exercise automatic login, logout, prefilled values, account switching, old-data cleanup, password visibility, and default-off persistence using a fake server/store. They do not send operational credentials to Shopify.
 
-## Lizenz und Veröffentlichung
+GitHub Actions additionally runs the shared Core/storage tests on Linux. Successful shared-library tests do not establish Linux desktop support.
 
-Der eigene Quellcode steht unter der [MIT-Lizenz](LICENSE). Die Lizenzen der verwendeten Bibliotheken gelten separat; siehe [Drittanbieterhinweise](THIRD_PARTY_NOTICES.md), insbesondere für EPPlus 4.5.3.2 unter LGPL.
+## Development guidance
 
-Das öffentliche Repository beginnt mit einem bereinigten Initial-Commit ohne die frühere private Git-Historie. Es enthält keine Betriebszugangsdaten, lokalen Anmeldespeicher oder Build-Ausgaben. Ein eigener Shopify-Zugang wird ausschließlich lokal im Anmeldeformular konfiguriert.
+See [AGENTS.md](AGENTS.md) for architecture, security, testing, issue tracking, and contribution rules. GitHub-facing text and repository documentation are written in English; application UI text may remain localized.
+
+## License and publication
+
+The application's own source is licensed under [MIT](LICENSE). Dependency licenses apply separately; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md), particularly the LGPL obligations for EPPlus 4.5.3.2.
+
+The public repository starts with a sanitized initial commit without the former private Git history. It contains no operational credentials, local credential store, or build output. Configure your own Shopify connection locally in the login dialog.

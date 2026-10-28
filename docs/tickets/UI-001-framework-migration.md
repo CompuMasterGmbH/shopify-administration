@@ -1,33 +1,35 @@
-# UI-001: Oberfläche auf Avalonia oder WinUI umstellen
+# UI-001: Migrate the desktop UI to Avalonia or WinUI
 
-Status: Offen
-Erstellt: 28.10.2026
-Priorität: Geplante technische Weiterentwicklung
-Ausgangslage: WinForms-Desktop-App, seit dieser Änderung auf .NET 10.
+Status: Open
+Created: 2026-10-28
+Priority: Planned technical development
+Baseline: WinForms desktop application, now targeting .NET 10.
 
-## Ziel
+## Goal
 
-Frameworkentscheidung und Umsetzung vorbereiten, ohne Anmeldedaten, Sitzung und API-Zugriff erneut an eine Oberfläche zu koppeln. Avalonia ist für eine plattformübergreifende Oberfläche zu prüfen; WinUI ist eine Windows-Option. Die Auswahl ist noch offen.
+Choose and implement the next UI framework without coupling credentials, sessions or API access to a specific frontend again. Evaluate Avalonia for a cross-platform UI and WinUI for a Windows-only UI. The framework decision remains open.
 
-## Bereits umgesetzt
+## Existing foundation
 
-- ShopifyAdministration.Core (netstandard2.0) enthält Verbindungsvalidierung, API-Transport, Anmeldung/Abmeldung und ICredentialStore; keine WinForms-/Windows-Abhängigkeit.
-- ShopifyAdministration.Platform (net10.0) kapselt den Windows-DPAPI-Speicher. Die Factory wählt ihn nur unter Windows.
-- SessionOnlyCredentialStore ist der sichere Fallback: Anmeldung ist möglich, dauerhafte Speicherung ist nicht verfügbar. Es gibt keinen Klartext-Fallback.
-- Der aktuelle WinForms-Dialog ist ein austauschbarer Adapter. Speicherung ist standardmäßig aus; Passwortanzeige bleibt eine bewusste Benutzeraktion.
-- Windows-.NET-10-UI und Bibliotheken sowie Tests werden getrennt gebaut.
+- ShopifyAdministration.Core (netstandard2.0) contains connection validation, API transport, login/logout and ICredentialStore, without WinForms or Windows dependencies.
+- ShopifyAdministration.Platform (net10.0) encapsulates Windows DPAPI storage; the factory selects it only on Windows.
+- SessionOnlyCredentialStore is the safe fallback: session login is available, persistent storage is unavailable, and there is no plaintext fallback.
+- The WinForms login dialog is a replaceable adapter. Persistence defaults to off and showing the password requires an explicit user action.
+- Windows UI projects, shared libraries and tests are built separately.
 
-## Aufgaben und Abnahmekriterien
+## Tasks and acceptance criteria
 
-1. Entscheidung Avalonia vs. WinUI dokumentieren: Zielplattformen, Deployment, Barrierefreiheit, DPI, Wartung und Lizenz.
-2. Anmeldeansicht/Status/Fehler als UI-unabhängiges ViewModel oder Presenter ergänzen; Core-API unverändert verwenden.
-3. Windows-spezifische Dateien/Shell-Aktionen/Export-Dialoge in eigene UI-/Plattformadapter verschieben; gemeinsam genutzten Code auf direkte OS-Aufrufe prüfen.
-4. Für Avalonia auf macOS einen Keychain-Adapter, auf Linux einen Secret-Service-Adapter prüfen. Fehlender/gesperrter Secret Store darf niemals zu Klartextdateien führen.
-5. Auf jeder Plattform prüfen: erstmalig nicht speichern; explizit speichern; automatischer Login erst nach Servervalidierung; Abmelden beendet Anfragen, leert alte Shop-Daten und öffnet vorausgefüllte Anmeldung; Konto-/URL-Wechsel; Passwort anzeigen/verbergen; Speichern wieder abwählen; beschädigter/gesperrter Store; Abbrechen/Timeout.
-6. Native Verschlüsselungs-APIs ausschließlich im jeweiligen Plattformadapter und mit Plattformprüfung ausführen. Fallback muss ohne diese APIs starten.
-7. Automatisierte Core-Tests unter Windows/Linux/macOS und UI-/Store-Integrationstests je unterstützter Plattform ausführen.
-8. .NET 10 und unterstützte API-/Paketversionen für die Zieloberflächen festlegen; vorhandene Alt-GraphQL-/ShopifySharp-Adapter bei der funktionalen Migration konsolidieren.
+- [ ] Document the Avalonia/WinUI decision, target platforms, deployment, accessibility, DPI behavior, maintenance and licensing.
+- [ ] Introduce a UI-independent login/status/error view model or presenter using the existing core.
+- [ ] Move Windows-specific file/shell actions and export dialogs behind UI/platform adapters; inspect shared code for direct OS calls.
+- [ ] For Avalonia, evaluate macOS Keychain and Linux Secret Service adapters. A missing or locked secret store must never trigger plaintext persistence.
+- [ ] Test initial non-persistence, explicit persistence, server-validated automatic login, logout cancellation and data clearing, prefilled relogin, account/URL switching, password visibility, disabling persistence, damaged/locked storage, cancellation and timeouts.
+- [ ] Execute native cryptography APIs only in their matching platform adapters with platform checks; the fallback must start without those APIs.
+- [ ] Run core tests on Windows/Linux/macOS and UI/storage integration tests for every supported platform.
+- [ ] Define supported .NET 10 API/package versions and consolidate legacy GraphQL/ShopifySharp adapters during functional migration.
+
+Related work: #2 (data retrieval redesign), #3 (release assets), #4 (deployment and update checks).
 
 ## Tracker
 
-Server-Ticket: [GitHub #1](https://github.com/CompuMasterGmbH/shopify-administration/issues/1). Diese Datei hält den Umsetzungskontext zusätzlich beim Quellcode fest.
+[GitHub issue #1](https://github.com/CompuMasterGmbH/shopify-administration/issues/1) tracks implementation; this file retains the plan alongside the source.
