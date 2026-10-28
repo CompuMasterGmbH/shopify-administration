@@ -30,6 +30,7 @@ public sealed partial class MainWindow : Window
     public MainWindow(LoginSession session, bool canPersist, bool offline = false)
     {
         InitializeComponent();
+        Icon = new WindowIcon(Avalonia.Platform.AssetLoader.Open(new Uri("avares://ShopifyAdministration.Desktop/Assets/app.png")));
         this.session = session; this.offline = offline;
         login = new LoginPresenter(session, canPersist);
         data = new RetrievalPresenter(session);

@@ -1,0 +1,77 @@
+name: Package candidate assets
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+  TESTINGPLATFORM_TELEMETRY_OPTOUT: '1'
+
+jobs:
+  package:
+    name: Candidate package (${{ matrix.rid }})
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: pwsh
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            rid: win-x64
+          - os: ubuntu-latest
+            rid: linux-x64
+          - os: macos-latest
+            rid: osx-arm64
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: 10.0.403
+      - name: Restore icon renderer
+        working-directory: tools/assets
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Verify deterministic platform resources
+        working-directory: tools/assets
+        run: npm run verify
+      - name: Candidate identity
+        run: |
+          [xml]$project = Get-Content ShopifyAdministration.Desktop/ShopifyAdministration.Desktop.csproj
+          $version = $project.Project.PropertyGroup.Version | Where-Object { $_ } | Select-Object -First 1
+          "VERSION=$version-ci.${{ github.run_id }}" >> $env:GITHUB_ENV
+      - name: Publish self-contained candidate
+        run: dotnet publish ShopifyAdministration.Desktop -c Release -r ${{ matrix.rid }} --self-contained true -p:RestoreLockedMode=true -p:ContinuousIntegrationBuild=true -p:DebugType=None "-p:Version=$env:VERSION" -o artifacts/publish
+      - name: Prepare and verify licenses, corresponding source and package metadata
+        run: python tools/package-assets.py --publish artifacts/publish --assets ShopifyAdministration.Desktop/obj/project.assets.json --output artifacts/packages --rid ${{ matrix.rid }} --version $env:VERSION
+      - name: Native packaged startup on Linux
+        if: runner.os == 'Linux'
+        run: timeout 30s xvfb-run -a "artifacts/packages/shopify-administration-$env:VERSION-${{ matrix.rid }}/ShopifyAdministration.Desktop" --startup-smoke
+      - name: Native packaged startup on Windows
+        if: runner.os == 'Windows'
+        run: |
+          $app = "artifacts/packages/shopify-administration-$env:VERSION-${{ matrix.rid }}/ShopifyAdministration.Desktop.exe"
+          $process = Start-Process -FilePath $app -ArgumentList '--startup-smoke' -PassThru -Wait -WindowStyle Hidden
+          if ($process.ExitCode -ne 0) { throw "Packaged startup failed: $($process.ExitCode)" }
+        timeout-minutes: 2
+      - name: Native packaged startup on macOS
+        if: runner.os == 'macOS'
+        run: '& "artifacts/packages/shopify-administration-$env:VERSION-${{ matrix.rid }}/Shopify Administration.app/Contents/MacOS/ShopifyAdministration.Desktop" --startup-smoke'
+        timeout-minutes: 2
+      - name: Verify inventory and archive candidate
+        run: python tools/archive-package.py "artifacts/packages/shopify-administration-$env:VERSION-${{ matrix.rid }}"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: candidate-assets-${{ matrix.rid }}
+          path: |
+            artifacts/packages/*.zip
+            artifacts/packages/*.tar.gz
+            artifacts/packages/*.sha256
+          if-no-files-found: error
+          retention-days: 14
