@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -130,13 +131,47 @@ public sealed class UpdateTests
         Assert.That((await checker.CheckAsync(Profile())).Status, Is.EqualTo(UpdateStatus.Error));
     }
 
-    [Test]
-    public async Task TimeoutAndCallerCancellationHaveDistinctSafeBehavior()
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task TimeoutAndCallerCancellationHaveDistinctSafeBehavior(bool stallBody)
     {
-        using var checker = new UpdateChecker(new StubHandler(async (_, token) => { await Task.Delay(Timeout.Infinite, token); return RetrievalTests.Json("{}"); }), TimeSpan.FromMilliseconds(50));
-        Assert.That((await checker.CheckAsync(Profile())).Message, Does.Contain("Zeitüberschreitung"));
+        using var checker = new UpdateChecker(new StubHandler(async (_, token) =>
+        {
+            if (!stallBody) await Task.Delay(Timeout.Infinite, token);
+            return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StreamContent(new StalledBody()) };
+        }), TimeSpan.FromMilliseconds(50));
+        using var cleanup = new CancellationTokenSource();
+        try
+        {
+            Assert.That((await checker.CheckAsync(Profile(), cleanup.Token).WaitAsync(TimeSpan.FromSeconds(2))).Message, Does.Contain("Zeitüberschreitung"));
+        }
+        finally { cleanup.Cancel(); }
         using var cancellation = new CancellationTokenSource(); cancellation.Cancel();
         await Assert.CatchAsync<OperationCanceledException>(async () => { await checker.CheckAsync(Profile(), cancellation.Token); });
+    }
+
+    [Test]
+    public async Task CallerCanCancelWhileTheMetadataBodyIsStalled()
+    {
+        using var body = new StalledBody();
+        using var checker = new UpdateChecker(new StubHandler((_, _) => Task.FromResult(
+            new HttpResponseMessage(HttpStatusCode.OK) { Content = new StreamContent(body) })));
+        using var cancellation = new CancellationTokenSource();
+        var check = checker.CheckAsync(Profile(), cancellation.Token);
+        try { await body.ReadStarted.Task.WaitAsync(TimeSpan.FromSeconds(2)); }
+        finally { cancellation.Cancel(); }
+        await Assert.CatchAsync<OperationCanceledException>(async () => { await check.WaitAsync(TimeSpan.FromSeconds(2)); });
+    }
+
+    private sealed class StalledBody : MemoryStream
+    {
+        public TaskCompletionSource<bool> ReadStarted { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        {
+            ReadStarted.TrySetResult(true);
+            await Task.Delay(Timeout.Infinite, cancellationToken);
+            return 0;
+        }
     }
 
     [Test]
