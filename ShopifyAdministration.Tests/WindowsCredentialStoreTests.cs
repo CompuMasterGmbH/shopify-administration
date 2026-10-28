@@ -7,7 +7,7 @@ using ShopifyAdministration.Platform;
 
 namespace ShopifyAdministration.Tests;
 
-[TestFixture, Platform("Win"), Category("WindowsStorage")]
+[TestFixture, Category("WindowsStorage")]
 [SupportedOSPlatform("windows")]
 public sealed class WindowsCredentialStoreTests
 {
@@ -18,6 +18,8 @@ public sealed class WindowsCredentialStoreTests
     [SetUp]
     public void CreateUniqueTestOwnedStore()
     {
+        if (!OperatingSystem.IsWindows())
+            Assert.Ignore("Windows DPAPI requires Windows; the session-only fallback is tested separately.");
         directory = Path.Combine(Path.GetTempPath(), "unittests_shopify_credentials_" + Guid.NewGuid().ToString("N"));
         Assert.That(Directory.Exists(directory), Is.False);
         Directory.CreateDirectory(directory);
