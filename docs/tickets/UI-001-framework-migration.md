@@ -1,13 +1,13 @@
 # UI-001: Migrate the desktop UI to Avalonia or WinUI
 
-Status: Open
+Status: Implemented in PR #10; GitHub issue #1 closed
 Created: 2026-10-28
 Priority: Planned technical development
 Baseline: WinForms desktop application, now targeting .NET 10.
 
 ## Goal
 
-Choose and implement the next UI framework without coupling credentials, sessions or API access to a specific frontend again. Evaluate Avalonia for a cross-platform UI and WinUI for a Windows-only UI. The framework decision remains open.
+The historical request was to choose and implement the next UI framework without coupling credentials, sessions or API access to a specific frontend again. Avalonia 12 on .NET 10 was selected and implemented. See [the framework decision](../ui-framework-decision.md) for the maintained architecture, platform/storage matrix and qualification limits. The former WinForms frontend remains a compatibility adapter. Interactive signed-installation, DPI and accessibility qualification is tracked in GitHub #14.
 
 ## Existing foundation
 

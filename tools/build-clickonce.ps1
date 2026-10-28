@@ -13,6 +13,9 @@ $source = (Resolve-Path -LiteralPath $Package).ProviderPath
 $destination = [IO.Path]::GetFullPath($Output)
 if (Test-Path -LiteralPath $destination) { throw 'Use a new, empty ClickOnce staging directory.' }
 if ($Channel -ne 'candidate' -and -not $CertificateFile) { throw 'Stable/preview ClickOnce manifests require a publisher certificate.' }
+$sourceInfo = Get-Content -LiteralPath (Join-Path $source 'app-info.json') -Raw | ConvertFrom-Json
+if ($sourceInfo.appId -ne 'shopify-administration' -or $sourceInfo.rid -ne 'win-x64') { throw 'Incorrect package identity or architecture.' }
+if ($Channel -ne 'candidate' -and ($sourceInfo.stableApproved -isnot [bool] -or -not $sourceInfo.stableApproved -or $sourceInfo.channel -ne $Channel)) { throw 'Use a reviewed, qualified input package for a production channel.' }
 if ($ManifestVersion.Revision -lt 0 -or @($ManifestVersion.Major,$ManifestVersion.Minor,$ManifestVersion.Build,$ManifestVersion.Revision | Where-Object { $_ -lt 0 -or $_ -gt 65535 }).Count) { throw 'ClickOnce requires four bounded numeric components.' }
 $repository = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $versionFolder = 'ApplicationFiles/' + $ManifestVersion.ToString().Replace('.','_')
@@ -26,7 +29,7 @@ $launcherLicense = Join-Path $app 'licenses/Microsoft.DotNet.Mage-10.0.0'
 New-Item -ItemType Directory -Path $launcherLicense -Force | Out-Null
 Copy-Item -LiteralPath (Join-Path $repository 'docs/licenses/DotNetDeploymentTools-LICENSE.txt') -Destination (Join-Path $launcherLicense 'LICENSE.txt')
 $infoPath = Join-Path $app 'app-info.json'
-$info = Get-Content -LiteralPath $infoPath -Raw | ConvertFrom-Json
+$info = $sourceInfo
 if ($info.appId -ne 'shopify-administration' -or $info.rid -ne 'win-x64') { throw 'Incorrect package identity or architecture.' }
 $info.channel = $Channel
 $info.deploymentType = 'clickonce'
