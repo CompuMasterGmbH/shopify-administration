@@ -20,12 +20,13 @@ public sealed partial class App : Application
             var startupSmoke = desktop.Args?.Contains("--startup-smoke") == true;
             var demo = startupSmoke || desktop.Args?.Contains("--offline-smoke") == true;
             var store = demo ? new SessionOnlyCredentialStore() : CredentialStoreFactory.Create();
-            desktop.MainWindow = new MainWindow(new LoginSession(store), store.CanPersist, demo);
+            desktop.MainWindow = new MainWindow(new LoginSession(store), store.CanPersist, demo, demo ? null : DesktopUpdates.Create());
             if (startupSmoke)
                 desktop.MainWindow.Opened += async (_, _) =>
                 {
+                    Console.WriteLine("Native startup smoke: window opened");
                     await Task.Delay(500);
-                    desktop.MainWindow.Close();
+                    desktop.Shutdown(0);
                 };
         }
         base.OnFrameworkInitializationCompleted();

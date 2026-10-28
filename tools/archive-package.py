@@ -3,6 +3,8 @@ import argparse
 import hashlib
 import json
 import os
+import subprocess
+import sys
 from pathlib import Path
 import tarfile
 import zipfile
@@ -25,6 +27,9 @@ if package.name.endswith('linux-x64'):
     archive = package.with_name(package.name + '.tar.gz')
     with tarfile.open(archive, 'w:gz') as output:
         output.add(package, arcname=package.name)
+elif sys.platform == 'darwin':
+    archive = package.with_name(package.name + '.zip')
+    subprocess.run(['/usr/bin/ditto','-c','-k','--sequesterRsrc','--keepParent',str(package),str(archive)],check=True)
 else:
     archive = package.with_name(package.name + '.zip')
     with zipfile.ZipFile(archive, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=6) as output:

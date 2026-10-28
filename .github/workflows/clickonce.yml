@@ -1,0 +1,50 @@
+name: ClickOnce qualification
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+  TESTINGPLATFORM_TELEMETRY_OPTOUT: '1'
+jobs:
+  clickonce:
+    name: Windows ClickOnce manifests and staged update recovery
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: 10.0.403
+      - run: dotnet tool restore
+      - name: Candidate versions
+        run: |
+          [xml]$project = Get-Content ShopifyAdministration.Desktop/ShopifyAdministration.Desktop.csproj
+          $version = $project.Project.PropertyGroup.Version | Where-Object { $_ } | Select-Object -First 1
+          $numeric = $version.Split('-')[0]
+          "PACKAGE_VERSION=$version" >> $env:GITHUB_ENV
+          "MANIFEST_VERSION=$numeric.0" >> $env:GITHUB_ENV
+          "NEXT_MANIFEST_VERSION=$numeric.1" >> $env:GITHUB_ENV
+      - name: Publish test candidate
+        run: dotnet publish ShopifyAdministration.Desktop -c Release -r win-x64 --self-contained true -p:RestoreLockedMode=true -p:DebugType=None -o artifacts/publish
+      - name: Build complete test package
+        run: python tools/package-assets.py --publish artifacts/publish --assets ShopifyAdministration.Desktop/obj/project.assets.json --output artifacts/packages --rid win-x64 --version $env:PACKAGE_VERSION
+      - name: Generate candidate N and N+1 deployment manifests
+        run: |
+          ./tools/build-clickonce.ps1 -Package "artifacts/packages/shopify-administration-$env:PACKAGE_VERSION-win-x64" -Output artifacts/clickonce-n -ManifestVersion $env:MANIFEST_VERSION
+          ./tools/build-clickonce.ps1 -Package "artifacts/packages/shopify-administration-$env:PACKAGE_VERSION-win-x64" -Output artifacts/clickonce-next -ManifestVersion $env:NEXT_MANIFEST_VERSION
+      - name: Verify manifest graph, channel identity and failed candidate recovery
+        run: python tools/qualify-clickonce.py artifacts/clickonce-n artifacts/clickonce-next
+      - name: Archive qualification output
+        run: Compress-Archive -Path artifacts/clickonce-n,artifacts/clickonce-next -DestinationPath artifacts/clickonce-qualification.zip
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: clickonce-qualification
+          path: artifacts/clickonce-qualification.zip
+          if-no-files-found: error
+          retention-days: 7

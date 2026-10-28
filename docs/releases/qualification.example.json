@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "appId": "shopify-administration",
+  "version": "0.0.0",
+  "channel": "stable",
+  "approved": false,
+  "evidenceIssue": 14,
+  "targets": [
+    {"rid":"win-x64","approved":false,"cleanInstallationVerified":false,"upgradeVerified":false,"integrityVerified":false,"nativeUiVerified":false,"publisherTrustVerified":false},
+    {"rid":"linux-x64","approved":false,"cleanInstallationVerified":false,"upgradeVerified":false,"integrityVerified":false,"nativeUiVerified":false},
+    {"rid":"osx-arm64","approved":false,"cleanInstallationVerified":false,"upgradeVerified":false,"integrityVerified":false,"nativeUiVerified":false,"publisherTrustVerified":false}
+  ]
+}
