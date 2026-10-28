@@ -89,6 +89,7 @@ The shared Core/storage runner can also execute on other supported .NET 10 hosts
 - Keep an explicit supported OS/frontend/architecture/package matrix. Publish stable assets only for tested targets; see #3.
 - The application's own source is MIT-licensed. Third-party packages retain their own licenses; preserve LICENSE and THIRD_PARTY_NOTICES.md.
 - EPPlus 4.5.3.2 is LGPL-3.0-or-later. The MIT wrapper does not relicense it. Verify notices, corresponding source and replacement/relinking obligations before distributing binaries.
+- Do not upgrade EPPlus to 5.x or any later major version. Keep the resolved version below 5, including through transitive dependencies or wrapper upgrades. The current 4.5.3.2 is an intentional exception to the general dependency-upgrade goal in #5; report incompatible upgrades instead of silently changing this constraint.
 - ClickOnce is a Windows option where supported by the chosen frontend. Do not assume Linux/macOS or WinUI 3 support; evaluate appropriate alternatives under #4.
 - Keep update checks asynchronous, bounded, platform/deployment/channel aware, and independent of Shopify credentials. Preserve encrypted profiles across app updates.
 - Source commits, pushes, and issue creation do not by themselves authorize a production release. Publish only within the user's release authorization and after the relevant build/test/asset checks.
