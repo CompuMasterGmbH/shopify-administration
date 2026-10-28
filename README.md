@@ -27,14 +27,19 @@ A Shopify administration desktop application. The current frontend is WinForms o
 Use the .NET 10 SDK and Windows for the complete application/UI suite:
 
 ~~~powershell
-dotnet build Shopify-Administration.sln -c Release
-dotnet run --project ShopifyAdministration.Tests -c Release
-dotnet run --project ShopifyAdministration.UiTests -c Release
+dotnet restore Shopify-Administration.sln --locked-mode
+dotnet build Shopify-Administration.sln -c Release --no-restore
+dotnet test ShopifyAdministration.Tests -c Release --no-build
+dotnet test ShopifyAdministration.UiTests -c Release --no-build
 ~~~
 
-The Core/storage tests use fake credentials and a fake HTTP handler. On Windows they also verify real DPAPI encryption in a temporary directory. The UI tests exercise automatic login, logout, prefilled values, account switching, old-data cleanup, password visibility, and default-off persistence using a fake server/store. They do not send operational credentials to Shopify.
+Both test projects use NUnit 5, NUnit3TestAdapter, and Microsoft.NET.Test.Sdk, so tests are individually discoverable in IDEs and through `dotnet test`. NUnit asynchronous assertions must be awaited.
 
-GitHub Actions additionally runs the shared Core/storage tests on Linux. Successful shared-library tests do not establish Linux desktop support.
+The Core/storage tests use fake credentials and a fake HTTP handler. On Windows they also verify real DPAPI encryption in unique temporary directories; those tests are explicitly skipped on other platforms. The Windows STA/nonparallel UI fixtures exercise automatic login, logout, prefilled values, account switching, old-data cleanup, password visibility, and default-off persistence using a fake server/store. Additional Windows tests verify controlled pagination and a real XLSX export/read-back. They do not send operational credentials to Shopify.
+
+GitHub Actions runs the shared Core/storage tests on Windows, Linux, and macOS, the UI/export tests on Windows, and uploads TRX results. Test-platform telemetry is disabled in CI. Successful shared-library tests do not establish Linux/macOS desktop support.
+
+Package versions and compatible transitive pins are maintained in `Directory.Packages.props`; committed per-project lock files make CI restores reproducible. After intentional version edits, run `dotnet restore Shopify-Administration.sln --force-evaluate` and review the lock-file changes. See the [dependency upgrade review](docs/dependency-upgrade-review.md) for licensing, removed unused adapters, and intentional update exceptions.
 
 ## Development guidance
 

@@ -17,12 +17,12 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <NoWarn />
-    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
+    <WarningsAsErrors>$(WarningsAsErrors);41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <NoWarn />
-    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
+    <WarningsAsErrors>$(WarningsAsErrors);41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
@@ -45,14 +45,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CompuMaster.Data" Version="3.0.2022.311" />
-    <PackageReference Include="CompuMaster.Data.Controls" Version="3.0.2022.311" />
-    <PackageReference Include="CompuMaster.Data.XlsEpplus" Version="3.0.2021.715" />
-    <PackageReference Include="GraphQL.Client" Version="4.0.2" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="ShopifySharp" Version="5.15.0" />
-    <!-- Pin the patched compatible version of the legacy CompuMaster.Data transitive dependency. -->
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+    <PackageReference Include="CompuMaster.Data" />
+    <PackageReference Include="CompuMaster.Data.XlsEpplus" />
+    <PackageReference Include="EPPlus" />
+    <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
 
   <ItemGroup>

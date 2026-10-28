@@ -9,20 +9,30 @@ on:
 permissions:
   contents: read
 
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+  TESTINGPLATFORM_TELEMETRY_OPTOUT: '1'
+
 jobs:
   core:
     name: Core and storage tests (${{ matrix.os }})
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           dotnet-version: 10.0.x
-      - run: dotnet run --project ShopifyAdministration.Tests -c Release
+      - run: dotnet restore ShopifyAdministration.Tests --locked-mode
+      - run: dotnet test ShopifyAdministration.Tests -c Release --no-restore --logger "trx;LogFileName=core.trx" --results-directory TestResults/core
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: core-test-results-${{ matrix.os }}
+          path: TestResults/core/*.trx
 
   windows:
     name: Windows application and UI tests
@@ -32,5 +42,11 @@ jobs:
       - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           dotnet-version: 10.0.x
-      - run: dotnet build Shopify-Administration.sln -c Release
-      - run: dotnet run --project ShopifyAdministration.UiTests -c Release --no-build
+      - run: dotnet restore Shopify-Administration.sln --locked-mode
+      - run: dotnet build Shopify-Administration.sln -c Release --no-restore
+      - run: dotnet test ShopifyAdministration.UiTests -c Release --no-build --no-restore --logger "trx;LogFileName=ui.trx" --results-directory TestResults/ui
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: windows-ui-test-results
+          path: TestResults/ui/*.trx
