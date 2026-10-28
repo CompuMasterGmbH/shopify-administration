@@ -100,7 +100,9 @@ for identity, library in assets['libraries'].items():
                 continue
             destination = target / relative
             destination.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(source, destination)
+            # Stream copying also supports deeply nested licence names on Windows hosts.
+            with source.open('rb') as original, destination.open('wb') as copied:
+                shutil.copyfileobj(original, copied)
 
 sources = package / 'sources'
 sources.mkdir()
