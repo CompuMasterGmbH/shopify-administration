@@ -105,8 +105,8 @@ The shared Core/storage runner can also execute on other supported .NET 10 hosts
 - For user-authorized issue implementation, complete the integration autonomously: review the full acceptance criteria and PR feedback, resolve blocking findings, and merge the PR when it is mergeable and all required PR workflows/checks have succeeded on the current head. Do not stop at a green open PR or request an additional merge confirmation. Respect repository protection rules; do not bypass required reviews or failing/pending checks.
 - Use closing issue references in the PR, verify the merge and issue closure, update the local integration branch, and remove the integrated feature branch remotely and locally after the cleanup conditions below are satisfied. Explicit user requests to keep a PR open or preserve a branch take precedence. A code merge does not authorize a release or deployment.
 - Do not overwrite another session's changes or switch its checkout unexpectedly.
-- Delete merged feature branches locally/remotely only after confirming the tip is integrated, there is no uncommitted/unmerged work, and associated required workflows have succeeded.
-- Keep branches while PRs are open or required workflows are queued, running, awaiting approval, failed, or uncertain.
+- Delete merged feature branches locally/remotely only after confirming the tip is integrated, there is no uncommitted/unmerged work, and all associated PR, branch and post-merge pipelines have finished successfully. Check workflow runs again after merging and immediately before deletion, including newly triggered runs; never remove a remote branch while a pipeline may still use it, even if that pipeline is not a required merge check.
+- Keep branches while PRs are open or any associated workflow is queued, running, awaiting approval, failed, or uncertain. Resolve or explicitly report blocked cleanup rather than deleting a branch underneath a pipeline.
 
 ## Encoding and line endings
 
