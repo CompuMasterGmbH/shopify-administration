@@ -13,6 +13,8 @@ Public Class ApiBrowser
     Public Async Function RunGetRequestAsync() As Task
         If requesting OrElse shopify Is Nothing Then Return
         requesting = True
+        UseWaitCursor = True
+        TextBoxUrl.Enabled = False
         Try
             Dim result = Await shopify.QueryJsonGetAsync(TextBoxUrl.Text)
             If Not IsDisposed Then TextBoxResponse.Text = result.Json
@@ -24,6 +26,10 @@ Public Class ApiBrowser
             End If
         Finally
             requesting = False
+            If Not IsDisposed Then
+                UseWaitCursor = False
+                TextBoxUrl.Enabled = True
+            End If
         End Try
     End Function
     Private Async Sub TextBoxUrl_TextChanged(sender As Object, e As EventArgs) Handles TextBoxUrl.Validated

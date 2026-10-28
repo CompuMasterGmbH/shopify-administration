@@ -19,13 +19,7 @@ Public Class ShopifyQueries
             Dim result As New JsonQueryResultsPage With {.Json = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)}
             Dim links As IEnumerable(Of String) = Nothing
             If response.Headers.TryGetValues("Link", links) Then
-                For Each header In links
-                    Dim match = Regex.Match(header, "(?:^|,)\s*<([^>]+)>\s*;\s*rel\s*=\s*""next""", RegexOptions.IgnoreCase)
-                    If match.Success Then
-                        result.NextPageLink = client.ResolveRequestUri(match.Groups(1).Value).AbsoluteUri
-                        Exit For
-                    End If
-                Next
+                result.NextPageLink = RestPagination.Next(client, resource, links)
             End If
             Return result
         End Using

@@ -56,3 +56,9 @@ The public repository starts with a sanitized initial commit without the former 
 ## Avalonia desktop development
 
 Run `dotnet run --project ShopifyAdministration.Desktop` on a qualified desktop host. Run `dotnet test ShopifyAdministration.Desktop.Tests` for offline headless NUnit UI tests. `--offline-smoke` opens a test window without reading an operational profile or requesting Shopify data; `--startup-smoke` additionally closes the native test window automatically. Windows/Linux/macOS CI runs the new control-tree tests and native startup separately from the shared tests. Platform-specific installation and signing are tracked in #3/#4.
+
+## Complete read-only retrieval
+
+The Avalonia frontend uses validated GraphQL queries for products/variants, all collections, smart collections and transfers with every line-item page. A refresh is asynchronous, cancellable, shows loading/wait state and only enables export after the complete dataset succeeds. Logout clears and invalidates pending results. Product rows preserve technical variants and parent IDs; export columns use explicit API field names. The API browser intentionally shows one read-only GET response and is labelled accordingly. Read access requires the relevant product/transfer permissions; API/version failures are not interpreted as zero records.
+
+Supplier master and purchase-order qualification remains in #11 because the newly documented purchasing reads do not match the available schema validator. The UI explains this limitation. No purchasing, transfer receipt or inventory mutation is performed. See [the retrieval audit](docs/data-retrieval-audit.md) for the feature inventory, completeness policy, retry/error behavior, export mapping and verification boundaries.

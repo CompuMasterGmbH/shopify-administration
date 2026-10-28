@@ -103,6 +103,8 @@ Public Class MainForm
         Dim requestBulk = bulk
         If requestClient Is Nothing OrElse loading Then Return
         loading = True
+        UseWaitCursor = True
+        DataGridView.DataSource = Nothing
         UpdateSessionUi()
         Try
             Dim table = Await load(requestBulk)
@@ -115,6 +117,7 @@ Public Class MainForm
             End If
         Finally
             loading = False
+            UseWaitCursor = False
             If Not IsDisposed Then UpdateSessionUi()
         End Try
     End Function

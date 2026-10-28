@@ -19,6 +19,8 @@ internal sealed class ApiWindow : Window
         send.Click += async (_, _) =>
         {
             send.IsEnabled = resource.IsEnabled = false;
+            Cursor = new Avalonia.Input.Cursor(Avalonia.Input.StandardCursorType.Wait);
+            response.Text = "Einzelne Antwortseite wird geladen …";
             try
             {
                 using var result = await client.GetAsync(resource.Text ?? "", closed.Token);
@@ -27,7 +29,7 @@ internal sealed class ApiWindow : Window
             }
             catch (OperationCanceledException) { if (!closed.IsCancellationRequested) response.Text = "Anfrage abgebrochen oder Zeitüberschreitung."; }
             catch (Exception) { if (!closed.IsCancellationRequested) response.Text = "Abruf fehlgeschlagen. URL, Verbindung und Berechtigungen prüfen."; }
-            finally { send.IsEnabled = resource.IsEnabled = true; }
+            finally { send.IsEnabled = resource.IsEnabled = true; Cursor = Avalonia.Input.Cursor.Default; }
         };
     }
 }

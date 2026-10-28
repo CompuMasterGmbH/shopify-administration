@@ -1,0 +1,6 @@
+query Collections($after: String, $filter: String) {
+  collections(first: 100, after: $after, query: $filter) {
+    nodes { id title handle descriptionHtml updatedAt templateSuffix sortOrder image { id url } }
+    pageInfo { hasNextPage endCursor }
+  }
+}

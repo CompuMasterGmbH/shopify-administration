@@ -4,7 +4,7 @@ Imports Newtonsoft.Json.Linq
 Public Class Collection
     Inherits PrimaryEntryBase
 
-    Public Property ID As String
+    Public Overrides Property ID As String
     Public Property Title As String
     Public Property handle As String
     Public Property template_suffix As String

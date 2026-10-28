@@ -4,7 +4,7 @@ Imports Newtonsoft.Json.Linq
 Public Class Product
     Inherits PrimaryEntryBase
 
-    Public Property ID As String
+    Public Overrides Property ID As String
     Public Property Title As String
     Public Property vendor As String
     Public Property product_type As String
@@ -104,7 +104,7 @@ Public Class Product
             Row("Variant_Created_At") = Me.Variants(MyCounter).Created_At
             Row("Variant_Updated_At") = Me.Variants(MyCounter).Updated_At
             If Me.Variants(MyCounter).image_id <> Nothing Then
-                Row("Variant_ImageUrl") = Me.GetImage(Me.Variants(MyCounter).image_id).Src
+                Row("Variant_ImageUrl") = Me.GetImage(Me.Variants(MyCounter).image_id)?.Src
             End If
             Row("Variant_ImageID") = Me.Variants(MyCounter).image_id
 
@@ -113,12 +113,13 @@ Public Class Product
     End Sub
 
     Public Function GetImage(id As String) As ProductImage
+        If Me.Images Is Nothing Then Return Nothing
         For MyCounter As Integer = 0 To Me.Images.Count - 1
             If Me.Images(MyCounter).ID = id Then
                 Return Me.Images(MyCounter)
             End If
         Next
-        Throw New ArgumentOutOfRangeException("ID " & id & " not found in list of images", NameOf(id))
+        Return Nothing
     End Function
 
 End Class

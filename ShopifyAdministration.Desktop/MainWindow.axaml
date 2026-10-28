@@ -4,14 +4,17 @@
       <TextBlock Name="Status" Text="Nicht angemeldet" TextWrapping="Wrap" />
     </Border>
     <StackPanel DockPanel.Dock="Top" Margin="16" Spacing="10">
-      <Grid ColumnDefinitions="*,Auto">
+      <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
         <TextBlock Text="Shopify Administration" FontSize="24" FontWeight="SemiBold" />
         <Button Grid.Column="1" Name="Account" Content="Abmelden / Konto wechseln" Click="Logout" IsVisible="False" />
+        <Button Grid.Column="2" Name="CancelLoad" Content="Abruf abbrechen" Click="CancelLoadClick" IsVisible="False" />
       </Grid>
       <WrapPanel Name="Actions" IsVisible="False">
-        <Button Content="Produkte" Tag="products" Click="LoadData" Margin="0,0,8,8" />
-        <Button Content="Kategorien" Tag="collections" Click="LoadData" Margin="0,0,8,8" />
-        <Button Content="Smart Collections" Tag="smart" Click="LoadData" Margin="0,0,8,8" />
+        <Button Name="Products" Content="Produkte" Tag="Products" Click="LoadData" Margin="0,0,8,8" />
+        <Button Content="Kategorien" Tag="Collections" Click="LoadData" Margin="0,0,8,8" />
+        <Button Content="Smart Collections" Tag="SmartCollections" Click="LoadData" Margin="0,0,8,8" />
+        <Button Content="Transfers (lesen)" Tag="Transfers" Click="LoadData" Margin="0,0,8,8" />
+        <Button Content="Lieferanten / Bestellungen" Click="ExplainPurchasing" Margin="0,0,8,8" />
         <Button Content="API-Browser" Click="OpenBrowser" Margin="0,0,8,8" />
         <Button Name="Export" Content="Excel exportieren" Click="ExportData" IsEnabled="False" Margin="0,0,8,8" />
       </WrapPanel>

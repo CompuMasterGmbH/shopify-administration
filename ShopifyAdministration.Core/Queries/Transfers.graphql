@@ -1,0 +1,6 @@
+query Transfers($after: String) {
+  inventoryTransfers(first: 100, after: $after) {
+    nodes { id name status }
+    pageInfo { hasNextPage endCursor }
+  }
+}
