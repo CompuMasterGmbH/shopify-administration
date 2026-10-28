@@ -1,0 +1,25 @@
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Class="ShopifyAdministration.Desktop.MainWindow" Title="Shopify Administration" Width="1180" Height="760" MinWidth="780" MinHeight="640">
+  <DockPanel>
+    <Border DockPanel.Dock="Bottom" Padding="16,10" BorderThickness="0,1,0,0" BorderBrush="Gray">
+      <TextBlock Name="Status" Text="Nicht angemeldet" TextWrapping="Wrap" />
+    </Border>
+    <StackPanel DockPanel.Dock="Top" Margin="16" Spacing="10">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Text="Shopify Administration" FontSize="24" FontWeight="SemiBold" />
+        <Button Grid.Column="1" Name="Account" Content="Abmelden / Konto wechseln" Click="Logout" IsVisible="False" />
+      </Grid>
+      <WrapPanel Name="Actions" IsVisible="False">
+        <Button Content="Produkte" Tag="products" Click="LoadData" Margin="0,0,8,8" />
+        <Button Content="Kategorien" Tag="collections" Click="LoadData" Margin="0,0,8,8" />
+        <Button Content="Smart Collections" Tag="smart" Click="LoadData" Margin="0,0,8,8" />
+        <Button Content="API-Browser" Click="OpenBrowser" Margin="0,0,8,8" />
+        <Button Name="Export" Content="Excel exportieren" Click="ExportData" IsEnabled="False" Margin="0,0,8,8" />
+      </WrapPanel>
+      <ProgressBar Name="Progress" Height="4" IsIndeterminate="True" IsVisible="False" />
+    </StackPanel>
+    <Grid>
+      <ContentControl Name="LoginHost" />
+      <DataGrid Name="Results" IsVisible="False" IsReadOnly="True" CanUserResizeColumns="True" GridLinesVisibility="All" Margin="16,0,16,16" />
+    </Grid>
+  </DockPanel>
+</Window>

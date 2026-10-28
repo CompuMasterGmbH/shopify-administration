@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -66,4 +66,5 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup><Compile Remove="Data\*.vb;Api\BulkQueries.vb;ShopifyQueries.vb" /><ProjectReference Include="..\ShopifyAdministration.Data\ShopifyAdministration.Data.vbproj" /></ItemGroup>
 </Project>

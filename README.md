@@ -1,6 +1,6 @@
 # Shopify-Administration
 
-A Shopify administration desktop application. The current frontend is WinForms on .NET 10.
+A Shopify administration desktop application. The primary frontend is Avalonia 12 on .NET 10, with Windows/Linux/macOS qualification described in [the framework decision](docs/ui-framework-decision.md).
 
 ## Login and local storage
 
@@ -10,7 +10,7 @@ A Shopify administration desktop application. The current frontend is WinForms o
 - **Remembering credentials defaults to off**, including prefilled dialogs. Without the checkbox, values stay in memory for the current application session. A successful login without the checkbox removes any previously remembered profile; cancelling leaves storage unchanged.
 - On Windows, opting in encrypts the entire profile (URL, API key, password) using DPAPI/CurrentUser in `%LOCALAPPDATA%\\CompuMaster\\ShopifyAdministration\\credentials.v1.bin`. Do not include this file in source control, cloud synchronization, or releases. It is bound to the Windows user profile; it does not protect against malware already running as that user.
 - A remembered profile is loaded and validated at startup. On failure the login dialog opens. A damaged store is not silently overwritten.
-- **File → Log out / Switch account** ends the session, cancels pending retrieval, closes API windows, and clears displayed data. The login dialog is prefilled with the last connection and allows another account/URL or relogin. A remembered profile remains until a successful login without the checkbox.
+- **Abmelden / Konto wechseln** ends the session, cancels pending retrieval, closes API windows, and clears displayed data. The login dialog is prefilled with the last connection and allows another account/URL or relogin. A remembered profile remains until a successful login without the checkbox.
 - Passwords are initially masked and can be toggled with the visibility button. The current UI labels are localized in German.
 - Authenticated requests, including pagination, cannot leave the configured HTTPS shop API. HTTP redirects are not followed automatically.
 
@@ -19,8 +19,10 @@ A Shopify administration desktop application. The current frontend is WinForms o
 - `ShopifyAdministration.Core`: UI/platform-independent connection handling, authentication, session lifecycle, HTTP transport, and credential-store contract.
 - `ShopifyAdministration.Platform`: Windows DPAPI adapter, explicit OS guards, and provider factory.
 - `SessionOnlyCredentialStore`: safe fallback when no secure adapter is available. Persistent storage is unavailable; session-only login remains possible.
-- `Shopify-Administration`: the current Windows-only WinForms frontend and data adapters. The frontend itself does not run on Linux/macOS.
-- [UI migration plan](docs/tickets/UI-001-framework-migration.md): Avalonia/WinUI decision, platform adapters, and acceptance criteria.
+- `ShopifyAdministration.Desktop`: Avalonia frontend, toolkit file dialogs and platform-independent XLSX generation.
+- `ShopifyAdministration.Data`: shared VB data adapters/models without WinForms references.
+- `Shopify-Administration`: Windows-only WinForms compatibility frontend.
+- [UI framework decision](docs/ui-framework-decision.md): architecture, secure-store evaluation, platform matrix and test limitations.
 
 ## Build and tests
 
@@ -33,7 +35,7 @@ dotnet test ShopifyAdministration.Tests -c Release --no-build
 dotnet test ShopifyAdministration.UiTests -c Release --no-build
 ~~~
 
-Both test projects use NUnit 5, NUnit3TestAdapter, and Microsoft.NET.Test.Sdk, so tests are individually discoverable in IDEs and through `dotnet test`. NUnit asynchronous assertions must be awaited.
+All test projects use NUnit 5, NUnit3TestAdapter, and Microsoft.NET.Test.Sdk, so tests are individually discoverable in IDEs and through `dotnet test`. NUnit asynchronous assertions must be awaited.
 
 The Core/storage tests use fake credentials and a fake HTTP handler. On Windows they also verify real DPAPI encryption in unique temporary directories; those tests are explicitly skipped on other platforms. The Windows STA/nonparallel UI fixtures exercise automatic login, logout, prefilled values, account switching, old-data cleanup, password visibility, and default-off persistence using a fake server/store. Additional Windows tests verify controlled pagination and a real XLSX export/read-back. They do not send operational credentials to Shopify.
 
@@ -47,6 +49,10 @@ See [AGENTS.md](AGENTS.md) for architecture, security, testing, issue tracking, 
 
 ## License and publication
 
-The application's own source is licensed under [MIT](LICENSE). Dependency licenses apply separately; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md), particularly the LGPL obligations for EPPlus 4.5.3.2.
+The application's own source is licensed under [MIT](LICENSE). Dependency licenses apply separately; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md), particularly the LGPL obligations for EPPlus 4.5.3.3.
 
 The public repository starts with a sanitized initial commit without the former private Git history. It contains no operational credentials, local credential store, or build output. Configure your own Shopify connection locally in the login dialog.
+
+## Avalonia desktop development
+
+Run `dotnet run --project ShopifyAdministration.Desktop` on a qualified desktop host. Run `dotnet test ShopifyAdministration.Desktop.Tests` for offline headless NUnit UI tests. `--offline-smoke` opens a test window without reading an operational profile or requesting Shopify data; `--startup-smoke` additionally closes the native test window automatically. Windows/Linux/macOS CI runs the new control-tree tests and native startup separately from the shared tests. Platform-specific installation and signing are tracked in #3/#4.

@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Version>2026.10.28</Version>
+    <ApplicationIcon>../Shopify-Administration/favicon_CMButterfly.ico</ApplicationIcon>
+    <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avalonia.Desktop" />
+    <PackageReference Include="Avalonia.Themes.Fluent" />
+    <PackageReference Include="Avalonia.Controls.DataGrid" />
+    <PackageReference Include="EPPlus" />
+    <ProjectReference Include="../ShopifyAdministration.Data/ShopifyAdministration.Data.vbproj" />
+    <ProjectReference Include="../ShopifyAdministration.Platform/ShopifyAdministration.Platform.csproj" />
+    <AvaloniaResource Include="../Shopify-Administration/favicon_CMButterfly.ico" Link="Assets/app.ico" />
+  </ItemGroup>
+</Project>

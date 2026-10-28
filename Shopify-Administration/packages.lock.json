@@ -59,6 +59,14 @@
           "Newtonsoft.Json": "[13.0.4, )"
         }
       },
+      "shopifyadministration.data": {
+        "type": "Project",
+        "dependencies": {
+          "CompuMaster.Data": "[3.0.2026.119, )",
+          "Newtonsoft.Json": "[13.0.4, )",
+          "ShopifyAdministration.Core": "[1.0.0, )"
+        }
+      },
       "shopifyadministration.platform": {
         "type": "Project",
         "dependencies": {
