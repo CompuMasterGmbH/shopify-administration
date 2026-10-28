@@ -49,10 +49,11 @@ namespace ShopifyAdministration.Core.Updates
         /// <summary>Gets the sole production metadata endpoint for this application.</summary>
         public static Uri Feed { get; } = new Uri("https://compumastergmbh.github.io/shopify-administration/app-updates.json");
         private readonly HttpClient client;
+        private readonly TimeSpan timeout;
         /// <summary>Creates an update client with redirects/cookies/default credentials disabled.</summary>
         public UpdateChecker(HttpMessageHandler handler = null, TimeSpan? requestTimeout = null)
         {
-            var timeout = requestTimeout ?? TimeSpan.FromSeconds(8);
+            timeout = requestTimeout ?? TimeSpan.FromSeconds(8);
             if (timeout <= TimeSpan.Zero || timeout > TimeSpan.FromSeconds(30)) throw new ArgumentOutOfRangeException(nameof(requestTimeout));
             client = new HttpClient(handler ?? new HttpClientHandler { AllowAutoRedirect = false, UseCookies = false, UseDefaultCredentials = false }, true)
             { Timeout = timeout };
@@ -67,8 +68,11 @@ namespace ShopifyAdministration.Core.Updates
                 return new UpdateResult(UpdateStatus.Disabled, "Für diesen Entwicklungs-/Testbuild ist kein freigegebener Update-Kanal aktiv.");
             try
             {
+                using (var deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
+                {
+                deadline.CancelAfter(timeout);
                 using (var request = new HttpRequestMessage(HttpMethod.Get, Feed))
-                using (var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false))
+                using (var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, deadline.Token).ConfigureAwait(false))
                 {
                     if (response.StatusCode != HttpStatusCode.OK) return Error("Update-Prüfung nicht verfügbar. Bitte später erneut versuchen.");
                     if (response.Content.Headers.ContentLength > 524288) return Error("Ungültige Update-Metadaten.");
@@ -77,7 +81,7 @@ namespace ShopifyAdministration.Core.Updates
                     using (var buffer = new MemoryStream())
                     {
                         var bytes = new byte[8192]; int count;
-                        while ((count = await stream.ReadAsync(bytes, 0, bytes.Length, cancellationToken).ConfigureAwait(false)) > 0)
+                        while ((count = await stream.ReadAsync(bytes, 0, bytes.Length, deadline.Token).ConfigureAwait(false)) > 0)
                         {
                             if (buffer.Length + count > 524288) return Error("Ungültige Update-Metadaten.");
                             buffer.Write(bytes, 0, count);
@@ -85,6 +89,7 @@ namespace ShopifyAdministration.Core.Updates
                         json = Encoding.UTF8.GetString(buffer.ToArray());
                     }
                     return Select(JObject.Parse(json), installation);
+                }
                 }
             }
             catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested) { return Error("Zeitüberschreitung bei der Update-Prüfung."); }
