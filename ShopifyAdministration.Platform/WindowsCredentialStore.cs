@@ -38,7 +38,7 @@ namespace ShopifyAdministration.Platform
                 if (settings == null) throw new InvalidDataException();
                 return settings.Normalize();
             }
-            catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException ||
+            catch (Exception ex) when (ex is IOException || ex is InvalidDataException || ex is UnauthorizedAccessException ||
                 ex is CryptographicException || ex is JsonException || ex is ArgumentException)
             {
                 throw new InvalidOperationException("Die gespeicherte Anmeldung konnte nicht entschlüsselt werden. Bitte erneut anmelden; die Datei wird nicht automatisch überschrieben.");

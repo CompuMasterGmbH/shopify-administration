@@ -1,0 +1,45 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="CompuMaster.Data" Version="3.0.2026.119" />
+    <PackageVersion Include="CompuMaster.Data.XlsEpplus" Version="3.0.2026.924" />
+    <!-- Deliberate licensing boundary: wrappers must never resolve EPPlus 5 or later. -->
+    <PackageVersion Include="EPPlus" Version="[4.5.3.3]" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageVersion Include="System.Security.Cryptography.ProtectedData" Version="10.0.14" />
+    <!-- Modern runtime assets for the retained CompuMaster/EPPlus compatibility dependencies. -->
+    <PackageVersion Include="System.Data.Odbc" Version="10.0.14" />
+    <PackageVersion Include="System.Data.OleDb" Version="10.0.14" />
+    <PackageVersion Include="System.Data.SqlClient" Version="4.9.1" />
+    <PackageVersion Include="System.DirectoryServices" Version="10.0.14" />
+    <PackageVersion Include="System.Drawing.Common" Version="10.0.14" />
+    <PackageVersion Include="System.Text.Encodings.Web" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.FileExtensions" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.FileProviders.Abstractions" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.FileProviders.Physical" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.FileSystemGlobbing" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.Primitives" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.NETCore.Platforms" Version="7.0.4" />
+    <PackageVersion Include="System.Xml.XPath.XmlDocument" Version="4.7.0" />
+    <PackageVersion Include="runtime.native.System.Data.SqlClient.sni" Version="4.7.0" />
+    <PackageVersion Include="Microsoft.Testing.Extensions.Telemetry" Version="2.5.2" />
+    <PackageVersion Include="Microsoft.Testing.Extensions.TrxReport.Abstractions" Version="2.5.2" />
+    <PackageVersion Include="Microsoft.Testing.Extensions.VSTestBridge" Version="2.5.2" />
+    <PackageVersion Include="Microsoft.Testing.Platform" Version="2.5.2" />
+    <PackageVersion Include="Microsoft.Testing.Platform.MSBuild" Version="2.5.2" />
+    <PackageVersion Include="Microsoft.TestPlatform.AdapterUtilities" Version="18.11.0" />
+    <!-- The test-platform telemetry consumer still targets the 2.x API; see issue #7. -->
+    <PackageVersion Include="Microsoft.ApplicationInsights" Version="[2.23.0,3.0.0)" />
+    <PackageVersion Include="NUnit" Version="5.0.0" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="6.3.1" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
+    <PackageVersion Include="NUnit.Analyzers" Version="4.15.0" />
+  </ItemGroup>
+</Project>

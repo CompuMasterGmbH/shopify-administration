@@ -53,8 +53,9 @@
 ## Tests and verification
 
 - Add durable regression tests for behavior changes and bug fixes where practical, especially authentication, encryption, pagination, cancellation, and account switching.
-- Shared tests in ShopifyAdministration.Tests use fake credentials, fake HTTP responses, and test-owned storage. On Windows they also test real DPAPI encryption in a temporary directory.
-- ShopifyAdministration.UiTests exercises the actual WinForms lifecycle with a fake server/store. These are offline UI tests, not proof of live Shopify behavior.
+- ShopifyAdministration.Tests contains discoverable NUnit tests using fake credentials, fake HTTP responses, and test-owned storage. Windows DPAPI cases are explicitly platform-guarded.
+- ShopifyAdministration.UiTests contains NUnit STA/nonparallel fixtures for the actual WinForms lifecycle with a fake server/store, controlled pagination, and XLSX export. These are offline tests, not proof of live Shopify behavior.
+- Await NUnit 5 asynchronous assertions; do not accidentally launch an assertion without observing its completion.
 - Never load, overwrite, delete, or reset a developer's real encrypted credential profile as part of automated test setup or cleanup. Inject fake stores or unique test-owned paths.
 - Give temporary resources unique test-owned names, verify ownership before cleanup, and clean them in finally/teardown paths, including partial failures. Never delete resources by a broad name-prefix match.
 - Announce interactive workstation GUI tests before opening or activating windows, coordinate competing runs, and avoid interfering with unrelated user windows. Headless CI and interactive workstation coverage must be reported separately.
@@ -65,9 +66,10 @@
 Use the .NET 10 SDK. Run the full solution/UI commands on Windows:
 
 ~~~powershell
-dotnet build Shopify-Administration.sln -c Release
-dotnet run --project ShopifyAdministration.Tests -c Release
-dotnet run --project ShopifyAdministration.UiTests -c Release
+dotnet restore Shopify-Administration.sln --locked-mode
+dotnet build Shopify-Administration.sln -c Release --no-restore
+dotnet test ShopifyAdministration.Tests -c Release --no-build
+dotnet test ShopifyAdministration.UiTests -c Release --no-build
 ~~~
 
 The shared Core/storage runner can also execute on other supported .NET 10 hosts; Windows-specific checks must remain guarded.
@@ -88,8 +90,9 @@ The shared Core/storage runner can also execute on other supported .NET 10 hosts
 
 - Keep an explicit supported OS/frontend/architecture/package matrix. Publish stable assets only for tested targets; see #3.
 - The application's own source is MIT-licensed. Third-party packages retain their own licenses; preserve LICENSE and THIRD_PARTY_NOTICES.md.
-- EPPlus 4.5.3.2 is LGPL-3.0-or-later. The MIT wrapper does not relicense it. Verify notices, corresponding source and replacement/relinking obligations before distributing binaries.
-- Do not upgrade EPPlus to 5.x or any later major version. Keep the resolved version below 5, including through transitive dependencies or wrapper upgrades. The current 4.5.3.2 is an intentional exception to the general dependency-upgrade goal in #5; report incompatible upgrades instead of silently changing this constraint.
+- EPPlus 4.5.3.3 uses the LGPL license supplied in its package. The MIT wrapper does not relicense it. Verify notices, corresponding source and replacement/relinking obligations before distributing binaries.
+- Do not upgrade EPPlus to 5.x or any later major version. Keep the resolved version below 5, including through transitive dependencies or wrapper upgrades. The exact central 4.5.3.3 pin is an intentional exception to the general dependency-upgrade goal in #5; report incompatible upgrades instead of silently changing this constraint.
+- Maintain versions in Directory.Packages.props and commit reviewed packages.lock.json changes. CI uses locked restores and fails on NuGet vulnerability/downgrade warnings.
 - ClickOnce is a Windows option where supported by the chosen frontend. Do not assume Linux/macOS or WinUI 3 support; evaluate appropriate alternatives under #4.
 - Keep update checks asynchronous, bounded, platform/deployment/channel aware, and independent of Shopify credentials. Preserve encrypted profiles across app updates.
 - Source commits, pushes, and issue creation do not by themselves authorize a production release. Publish only within the user's release authorization and after the relevant build/test/asset checks.

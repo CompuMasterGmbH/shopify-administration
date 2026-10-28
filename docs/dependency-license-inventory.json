@@ -1,0 +1,462 @@
+{
+  "reviewDate": "2026-10-28",
+  "packages": [
+    {
+      "package": "CompuMaster.Data.XlsEpplus",
+      "version": "3.0.2026.924",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "Shopify-Administration",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "CompuMaster.Data",
+      "version": "3.0.2026.119",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "Shopify-Administration",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "EPPlus",
+      "version": "4.5.3.3",
+      "license": "lgpl-3.0.txt",
+      "licenseType": "file",
+      "licenseUrl": "https://aka.ms/deprecateLicenseUrl",
+      "licenseFileOpening": "                   GNU LESSER GENERAL PUBLIC LICENSE\n                       Version 3, 29 June 2007\n\n Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>\n Everyone",
+      "projects": [
+        "Shopify-Administration",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "Microsoft.ApplicationInsights",
+      "version": "2.23.0",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "ShopifyAdministration.Tests",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "Microsoft.CodeCoverage",
+      "version": "18.11.0",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "ShopifyAdministration.Tests",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "Microsoft.Extensions.Configuration.Abstractions",
+      "version": "10.0.14",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "Shopify-Administration",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "Microsoft.Extensions.Configuration.FileExtensions",
+      "version": "10.0.14",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "Shopify-Administration",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "Microsoft.Extensions.Configuration.Json",
+      "version": "10.0.14",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "Shopify-Administration",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "Microsoft.Extensions.Configuration",
+      "version": "10.0.14",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "Shopify-Administration",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "Microsoft.Extensions.DependencyModel",
+      "version": "10.0.14",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "ShopifyAdministration.Tests",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "Microsoft.Extensions.FileProviders.Abstractions",
+      "version": "10.0.14",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "Shopify-Administration",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "Microsoft.Extensions.FileProviders.Physical",
+      "version": "10.0.14",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "Shopify-Administration",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "Microsoft.Extensions.FileSystemGlobbing",
+      "version": "10.0.14",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "Shopify-Administration",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "Microsoft.Extensions.Primitives",
+      "version": "10.0.14",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "Shopify-Administration",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "Microsoft.NET.Test.Sdk",
+      "version": "18.11.0",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "ShopifyAdministration.Tests",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "Microsoft.NETCore.Platforms",
+      "version": "7.0.4",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "ShopifyAdministration.Core"
+      ]
+    },
+    {
+      "package": "Microsoft.TestPlatform.AdapterUtilities",
+      "version": "18.11.0",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "ShopifyAdministration.Tests",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "Microsoft.TestPlatform.ObjectModel",
+      "version": "18.11.0",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "ShopifyAdministration.Tests",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "Microsoft.TestPlatform.TestHost",
+      "version": "18.11.0",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "ShopifyAdministration.Tests",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "Microsoft.Testing.Extensions.Telemetry",
+      "version": "2.5.2",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "ShopifyAdministration.Tests",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "Microsoft.Testing.Extensions.TrxReport.Abstractions",
+      "version": "2.5.2",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "ShopifyAdministration.Tests",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "Microsoft.Testing.Extensions.VSTestBridge",
+      "version": "2.5.2",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "ShopifyAdministration.Tests",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "Microsoft.Testing.Platform.MSBuild",
+      "version": "2.5.2",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "ShopifyAdministration.Tests",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "Microsoft.Testing.Platform",
+      "version": "2.5.2",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "ShopifyAdministration.Tests",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "NETStandard.Library",
+      "version": "2.0.3",
+      "license": null,
+      "licenseType": null,
+      "licenseUrl": "https://github.com/dotnet/standard/blob/master/LICENSE.TXT",
+      "licenseFileOpening": null,
+      "projects": [
+        "ShopifyAdministration.Core"
+      ]
+    },
+    {
+      "package": "NUnit.Analyzers",
+      "version": "4.15.0",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "ShopifyAdministration.Tests",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "NUnit",
+      "version": "5.0.0",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "ShopifyAdministration.Tests",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "NUnit3TestAdapter",
+      "version": "6.3.1",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "ShopifyAdministration.Tests",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "Newtonsoft.Json",
+      "version": "13.0.4",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "Shopify-Administration",
+        "ShopifyAdministration.Core",
+        "ShopifyAdministration.Platform",
+        "ShopifyAdministration.Tests",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "System.Data.Odbc",
+      "version": "10.0.14",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "Shopify-Administration",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "System.Data.OleDb",
+      "version": "10.0.14",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "Shopify-Administration",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "System.Data.SqlClient",
+      "version": "4.9.1",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "Shopify-Administration",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "System.Security.Cryptography.ProtectedData",
+      "version": "10.0.14",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "ShopifyAdministration.Platform",
+        "ShopifyAdministration.Tests"
+      ]
+    },
+    {
+      "package": "System.Xml.XPath.XmlDocument",
+      "version": "4.7.0",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "Shopify-Administration",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "runtime.native.System.Data.SqlClient.sni",
+      "version": "4.7.0",
+      "license": "MIT",
+      "licenseType": "expression",
+      "licenseUrl": "https://licenses.nuget.org/MIT",
+      "licenseFileOpening": null,
+      "projects": [
+        "Shopify-Administration",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "runtime.win-arm64.runtime.native.System.Data.SqlClient.sni",
+      "version": "4.4.0",
+      "license": null,
+      "licenseType": null,
+      "licenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
+      "licenseFileOpening": null,
+      "projects": [
+        "Shopify-Administration",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "runtime.win-x64.runtime.native.System.Data.SqlClient.sni",
+      "version": "4.4.0",
+      "license": null,
+      "licenseType": null,
+      "licenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
+      "licenseFileOpening": null,
+      "projects": [
+        "Shopify-Administration",
+        "ShopifyAdministration.UiTests"
+      ]
+    },
+    {
+      "package": "runtime.win-x86.runtime.native.System.Data.SqlClient.sni",
+      "version": "4.4.0",
+      "license": null,
+      "licenseType": null,
+      "licenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
+      "licenseFileOpening": null,
+      "projects": [
+        "Shopify-Administration",
+        "ShopifyAdministration.UiTests"
+      ]
+    }
+  ]
+}

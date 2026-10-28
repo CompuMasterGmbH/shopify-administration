@@ -1,30 +1,42 @@
 # Third-party dependencies
 
-The application's own source code is licensed under [MIT](LICENSE). Third-party libraries retain their own licenses; the application's license does not relicense those libraries.
+The application's own source is licensed under [MIT](LICENSE). Dependencies retain their own licenses; the application's license does not relicense them.
 
-This repository contains source code and NuGet package references, not prebuilt dependency DLLs or application releases. NuGet restores the original packages with their respective license information. A future binary release must separately include the required licenses, notices, and corresponding-source arrangements for the components it distributes.
+This source repository does not contain prebuilt dependency DLLs or application packages. Restores obtain the original NuGet packages with their license information. A binary release must separately include the required notices/license texts and satisfy corresponding-source and replacement/relinking requirements for its shipped components.
 
-## Direct references
+## Application dependencies
 
-| Package | Version | Declared license | Upstream |
+| Package | Resolved version | License | Upstream |
 |---|---|---|---|
-| CompuMaster.Data | 3.0.2022.311 | MIT | https://github.com/CompuMasterGmbH/CompuMaster.Data |
-| CompuMaster.Data.Controls | 3.0.2022.311 | MIT | https://github.com/CompuMasterGmbH/CompuMaster.Data |
-| CompuMaster.Data.XlsEpplus | 3.0.2021.715 | MIT | https://github.com/CompuMasterGmbH/CompuMaster.Data.XlsEpplus |
-| GraphQL.Client | 4.0.2 | MIT | https://github.com/graphql-dotnet/graphql-client |
-| Newtonsoft.Json | 13.0.1 | MIT | https://github.com/JamesNK/Newtonsoft.Json |
-| ShopifySharp | 5.15.0 | MIT | https://github.com/nozzlegear/ShopifySharp |
-| System.Data.SqlClient | 4.8.6 | MIT | https://github.com/dotnet/SqlClient |
-| System.Security.Cryptography.ProtectedData | 6.0.0 | MIT | https://github.com/dotnet/runtime |
+| CompuMaster.Data | 3.0.2026.119 | MIT | https://github.com/CompuMasterGmbH/CompuMaster.Data |
+| CompuMaster.Data.XlsEpplus | 3.0.2026.924 | MIT | https://github.com/CompuMasterGmbH/CompuMaster.Data.XlsEpplus |
+| EPPlus | 4.5.3.3 | LGPL text supplied as lgpl-3.0.txt | https://www.nuget.org/packages/EPPlus/4.5.3.3 |
+| Newtonsoft.Json | 13.0.4 | MIT | https://github.com/JamesNK/Newtonsoft.Json |
+| System.Security.Cryptography.ProtectedData | 10.0.14 | MIT | https://github.com/dotnet/runtime |
 
-Versions above correspond to the project references at the initial public import. Review the resolved dependency graph again when updating packages.
+EPPlus is intentionally constrained below version 5 and pinned to 4.5.3.3. The MIT XlsEpplus wrapper does not change EPPlus's LGPL obligations. The later EPPlus 5+ commercial/Polyform licensing model is not adopted. EPPlus 4.5.3.3 is a deprecated legacy release; this pin is a project compatibility/licensing decision, not an upstream support claim. Preserve the package's LGPL text and all applicable GPL/LGPL notice, corresponding-source and replacement/relinking requirements when distributing its binaries.
 
-## Material transitive dependencies
+Other retained application dependencies include Microsoft.Extensions 10.0.14, modern Windows/runtime compatibility packages, System.Data.SqlClient 4.9.1 and native SQL SNI packages. Their exact versions, projects and license declarations are recorded in [the resolved license inventory](docs/dependency-license-inventory.json). Modern Microsoft packages use MIT; some older compatibility packages link the original .NET license information.
 
-- **EPPlus 4.5.3.2** is restored through CompuMaster.Data.XlsEpplus and is licensed under **LGPL-3.0-or-later**. It is not covered by the MIT license of the wrapper or this application. The later EPPlus 5+ commercial/Polyform licensing model does not apply to version 4.5.3.2. See the [exact package](https://www.nuget.org/packages/EPPlus/4.5.3.2), [upstream source](https://github.com/JanKallman/EPPlus), and [LGPL terms](https://licenses.nuget.org/LGPL-3.0-or-later). Distributing EPPlus binaries requires satisfying the applicable GPL/LGPL notice, corresponding-source and replacement/relinking conditions. Keep this check part of any future binary-release process.
-- GraphQL.Client.Abstractions, GraphQL.Client.Abstractions.Websocket and GraphQL.Primitives 4.0.2 use the MIT license included as LICENSE.txt in the packages.
-- System.Reactive 4.3.2 uses Apache-2.0.
-- Microsoft.Extensions 2.2.0 packages refer to the ASP.NET [Apache-2.0 license](https://raw.githubusercontent.com/aspnet/AspNetCore/2.0.0/LICENSE.txt).
-- Other Microsoft/System runtime packages use their package-specific MIT or earlier [.NET license information](https://github.com/dotnet/core/blob/main/license-information.md), including any third-party notices bundled with those packages.
+## Test-only dependencies
 
-Primary license texts: [MIT](https://licenses.nuget.org/MIT), [Apache-2.0](https://licenses.nuget.org/Apache-2.0), [LGPL-3.0-or-later](https://licenses.nuget.org/LGPL-3.0-or-later). Package license declarations can be inspected in the exact-version .nuspec files supplied by NuGet.
+| Package | Version | License |
+|---|---|---|
+| NUnit | 5.0.0 | MIT |
+| NUnit3TestAdapter | 6.3.1 | MIT |
+| Microsoft.NET.Test.Sdk | 18.11.0 | MIT |
+| NUnit.Analyzers | 4.15.0 | MIT |
+| Microsoft.Testing.Platform components | 2.5.2 | MIT |
+| Microsoft.TestPlatform.AdapterUtilities | 18.11.0 | MIT |
+| Microsoft.ApplicationInsights | 2.23.0, test-platform dependency | MIT |
+
+Test tooling is not an application dependency. Test-platform telemetry is disabled in CI. Application Insights remains on the consumer-compatible 2.x range pending [issue #7](https://github.com/CompuMasterGmbH/shopify-administration/issues/7); it is not an application telemetry feature.
+
+CompuMaster.Data.Controls, GraphQL.Client/related packages, ShopifySharp, and their otherwise-unused transitive dependencies have been removed. No third-party source implementation from those packages is included here.
+
+## Review and release obligations
+
+- Review license/version changes whenever modifying Directory.Packages.props or lock files.
+- See [the dependency review](docs/dependency-upgrade-review.md) for removals, compatibility decisions, deprecations and verification limits.
+- Include package-specific copyrights/notices and required license texts in any future binary release; package references and this summary alone do not satisfy every redistribution obligation.
+- Primary license references: [MIT](https://licenses.nuget.org/MIT), [LGPL-3.0](https://licenses.nuget.org/LGPL-3.0), and [.NET license information](https://github.com/dotnet/core/blob/main/license-information.md).
