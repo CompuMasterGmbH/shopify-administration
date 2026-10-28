@@ -53,6 +53,8 @@ for path in publish.rglob('*'):
                 raise SystemExit('Credential-like content detected in: ' + path.name)
 
 package = args.output.resolve() / ('shopify-administration-' + args.version + '-' + args.rid)
+if os.name == 'nt' and not str(package).startswith('\\\\?\\'):
+    package = Path('\\\\?\\' + str(package))
 package.mkdir(parents=True, exist_ok=False)
 payload = package
 if args.rid == 'osx-arm64':
@@ -100,7 +102,7 @@ for identity, library in assets['libraries'].items():
                 continue
             destination = target / relative
             destination.parent.mkdir(parents=True, exist_ok=True)
-            # Stream copying also supports deeply nested licence names on Windows hosts.
+            # Preserve the complete upstream file without interpreting its contents.
             with source.open('rb') as original, destination.open('wb') as copied:
                 shutil.copyfileobj(original, copied)
 
@@ -122,7 +124,8 @@ source_repository = (args.source_repository or root).resolve(strict=True)
 origin = subprocess.check_output(['git', '-C', str(source_repository), 'remote', 'get-url', 'origin'], text=True).strip()
 if not re.search(r'github\.com[:/]CompuMasterGmbH/shopify-administration(?:\.git)?$', origin, re.I):
     raise SystemExit('Application source repository identity mismatch')
-subprocess.run(['git', '-C', str(source_repository), 'archive', '--format=zip', '--output', str(sources / 'application-source.zip'), 'HEAD'], check=True)
+with (sources / 'application-source.zip').open('wb') as application_source:
+    subprocess.run(['git', '-C', str(source_repository), 'archive', '--format=zip', 'HEAD'], stdout=application_source, check=True)
 commit = subprocess.check_output(['git', '-C', str(source_repository), 'rev-parse', 'HEAD'], text=True).strip()
 info = dict(schemaVersion=1, appId='shopify-administration', frontend='avalonia', version=args.version,
             channel='candidate', rid=args.rid, deploymentType='portable', commit=commit,

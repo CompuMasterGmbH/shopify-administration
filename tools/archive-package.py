@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import tarfile
 import zipfile
@@ -10,6 +11,8 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('package', type=Path)
 args = parser.parse_args()
 package = args.package.resolve(strict=True)
+if os.name == 'nt' and not str(package).startswith('\\\\?\\'):
+    package = Path('\\\\?\\' + str(package))
 manifest = json.loads((package / 'files.sha256.json').read_text())
 actual = {str(path.relative_to(package)).replace('\\', '/') for path in package.rglob('*') if path.is_file() and path.name != 'files.sha256.json'}
 if set(manifest) != actual:
