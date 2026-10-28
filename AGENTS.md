@@ -11,11 +11,11 @@
 ## Project structure and platform boundaries
 
 - Repository: https://github.com/CompuMasterGmbH/shopify-administration. The primary integration branch is main.
-- Shopify-Administration is the current VB.NET WinForms frontend targeting net10.0-windows.
+- ShopifyAdministration.Desktop is the primary Avalonia 12/.NET 10 frontend. Shopify-Administration retains the VB.NET WinForms compatibility frontend targeting net10.0-windows. ShopifyAdministration.Data contains the shared VB data adapters/models.
 - ShopifyAdministration.Core targets netstandard2.0 and owns connection validation, HTTP transport, authentication, session lifecycle, and the ICredentialStore contract. Keep it independent of Windows and any UI framework.
 - ShopifyAdministration.Platform targets net10.0 and owns platform-specific credential storage and provider selection. Execute native APIs only on the matching OS and guard provider selection explicitly.
 - Windows persistence uses DPAPI with CurrentUser. Other platforms currently use SessionOnlyCredentialStore: login is allowed, persistent storage is unavailable, and plaintext persistence is never a fallback.
-- Avalonia versus WinUI is not decided yet; see #1. The current desktop application is Windows-only. Do not describe Linux/macOS desktop support as delivered merely because shared-library tests pass there.
+- Avalonia is selected; see docs/ui-framework-decision.md. Keep desktop, native-storage and release-package qualification distinct: passing headless/shared tests does not prove every native platform or clean-machine deployment.
 - Keep business logic, pagination, mapping, cancellation, and update checking reusable by future frontends. Place dialogs, shell integration, installation, and native storage behind appropriate adapters.
 - Preserve shared API contracts and default behavior where practical. For intentional redesigns, document the migration and update affected callers/tests; do not silently remove compatibility.
 
@@ -54,6 +54,7 @@
 
 - Add durable regression tests for behavior changes and bug fixes where practical, especially authentication, encryption, pagination, cancellation, and account switching.
 - ShopifyAdministration.Tests contains discoverable NUnit tests using fake credentials, fake HTTP responses, and test-owned storage. Windows DPAPI cases are explicitly platform-guarded.
+- ShopifyAdministration.Desktop.Tests contains cross-platform NUnit/Avalonia headless control-tree and export tests. Native startup smoke tests use test-owned session-only storage and no network. Use --offline-smoke for manual UI tests that must not access the remembered operational profile.
 - ShopifyAdministration.UiTests contains NUnit STA/nonparallel fixtures for the actual WinForms lifecycle with a fake server/store, controlled pagination, and XLSX export. These are offline tests, not proof of live Shopify behavior.
 - Await NUnit 5 asynchronous assertions; do not accidentally launch an assertion without observing its completion.
 - Never load, overwrite, delete, or reset a developer's real encrypted credential profile as part of automated test setup or cleanup. Inject fake stores or unique test-owned paths.

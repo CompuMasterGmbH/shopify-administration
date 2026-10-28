@@ -40,3 +40,9 @@ CompuMaster.Data.Controls, GraphQL.Client/related packages, ShopifySharp, and th
 - See [the dependency review](docs/dependency-upgrade-review.md) for removals, compatibility decisions, deprecations and verification limits.
 - Include package-specific copyrights/notices and required license texts in any future binary release; package references and this summary alone do not satisfy every redistribution obligation.
 - Primary license references: [MIT](https://licenses.nuget.org/MIT), [LGPL-3.0](https://licenses.nuget.org/LGPL-3.0), and [.NET license information](https://github.com/dotnet/core/blob/main/license-information.md).
+
+## Avalonia desktop and native graphics
+
+Avalonia 12.1.4 (including platform backends, Fluent theme and headless NUnit test tooling), DataGrid 12.1.2, MicroCom.Runtime and Tmds.DBus.Protocol declare MIT licenses. Avalonia Pro/XPF/commercial controls are not used. SkiaSharp 3.119.4 and HarfBuzzSharp 8.3.1.3 packages declare MIT; retain their native-component third-party notices as well. Avalonia.Angle.Windows.Natives supplies a BSD-style ANGLE LICENSE including copyright, redistribution conditions and disclaimer. Preserve that full file and native third-party notices in binary distributions. The exact restored versions/license declarations are recorded in the inventory; `tools/review-dependency-licenses.py` regenerates it from restored assets without recording machine paths.
+
+Native graphics packages remain on the compatible ABI families selected by Avalonia rather than unverified SkiaSharp/HarfBuzz major overrides. Native runtime packages for unused platforms must be excluded or accounted for in platform release assets. No package in this migration introduces a required commercial licence; EPPlus retains its existing LGPL obligations.
